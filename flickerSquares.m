@@ -1,5 +1,5 @@
 %% Clear the workspace and the screen
-sca;
+ sca;
  close all;
 clearvars;
   PsychDefaultSetup(2);
