@@ -17,6 +17,8 @@ leftKey = KbName('LeftArrow');
 enterKey = KbName('RETURN');
 escapeKey = KbName('ESCAPE');
 %% set mean and sd for stim squares
+prompt = 'subject initials:';
+subj = input(prompt);
 % prompt = 'What is the mean frequency value? ';
 % mean = input(prompt);
 % prompt   2 = 'What is the sd value? ';
@@ -33,15 +35,11 @@ baseRect = [0 0 65 65]; %%stim squares size
 %rRect = [0 0 100 100]; %%response squares size
 fixation = [0 0 20 20];  %%fixation size
 [xCenter, yCenter] = RectCenter(windowRect);%%center points
-%%%distance away from fixation with these setting is 125 pixels
-xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
-yFSquares = yCenter-225;
-xRSquare = xCenter+50;  %%location response squares
-yRSquare = yCenter-225;
+
 rectColor = [1 1 1];
 pStart = GetSecs;
 experiment = 3;
-nTrials = 1;
+nTrials = 25;
 adapTime = 10;
 topUp = 5; 
 testTime = 2;
@@ -49,22 +47,49 @@ curTrial = 0;
 upScale = 1.2;
 downScale = 0.8;
 
-keyResp = zeros(50,1);
+keyResp = zeros(60,1);
+respOut = zeros(60,nTrials);
+meanFreqMat = zeros(1,nTrials);
+AdaptField = zeros(1,nTrials);
 stairCount = 0;
 %%do it
-mean = 5;
+meanPick = randi([1,5]);
+meanName = strcat('mean',int2str(meanPick));
+meanid = fopen(strcat(meanName,'.txt'));
+mean = fscanf(meanid,'%f');
+
 sd = 3;
-mean2 = rand*20;
+meanR = rand*20;
 
 phaseMat = abs(rand(5,5).*10);
 reversals = 6;
 
 for k = 1:nTrials
+    %%puts adapt field either on left or right
+    positionPick = randi([1,2]);
+
+    if positionPick == 1
+        %%%distance away from fixation with these setting is 125 pixels
+        xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
+        yFSquares = yCenter-225;
+        xRSquares = xCenter+50;  %%location response squares
+        yRSquares = yCenter-225;
+        AdaptField(1,k) = 1;
+    else
+        xRSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
+        yRSquares = yCenter-225;
+        xFSquares = xCenter+50;  %%location response squares
+        yFSquares = yCenter-225;
+        AdaptField(1,k) = 2;
+    end
+    
     %% matrix of probabalistically distributed frequencies
-    freqMat = abs(normrnd(mean,sd,5,5)); %%frequency of stim squares
-    respFreq = abs(normrnd(mean2,sd,5,5));  %%response square freq
+    freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+    meanFreq = sum(freqMat(:))/25;
+    meanFreqMat(1,k) = meanFreq;
+    respFreq = abs(normrnd(meanR,sd,5,5));  %%response square freq
     respFreqnew = respFreq;
-    while stairCount <= reversals
+    while stairCount <= reversals && curTrial < 60
         
         switch  experiment
             
@@ -88,14 +113,18 @@ for k = 1:nTrials
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
-                        if keyCode(leftKey)
+                        if keyCode(leftKey) && positionPick ==1
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
-                            
-                        elseif keyCode(rightKey)
+                        elseif keyCode(leftKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                            
+                        elseif keyCode(rightKey) && positionPick == 1
+                            respFreqnew = respFreq.*downScale;
+                            keyResp(curTrial,1) = 'D';
+                        elseif keyCode(rightKey) && positionPick == 2
+                            respFreqnew = respFreq.*downScale;
+                            keyResp(curTrial,1) = 'U';
                         end
                     end
                     
@@ -107,9 +136,12 @@ for k = 1:nTrials
                     Screen('Flip', window);
                 end
                 respFreq = respFreqnew;
-                if curTrial > 1 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
+                meanRespFreq = sum(respFreq(:))/25;
+                respOut(curTrial,k) = meanRespFreq;
+                %%increase staircase counter
+                if curTrial > 10 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
                     stairCount = stairCount+1
-                elseif curTrial > 1 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
+                elseif curTrial > 10 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
                     stairCount = stairCount+1
                 end
                 experiment = 2;
@@ -135,14 +167,18 @@ for k = 1:nTrials
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
-                        if keyCode(leftKey)
+                        if keyCode(leftKey) && positionPick ==1
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
-                            
-                        elseif keyCode(rightKey)
+                        elseif keyCode(leftKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                            
+                        elseif keyCode(rightKey) && positionPick == 1
+                            respFreqnew = respFreq.*downScale;
+                            keyResp(curTrial,1) = 'D';
+                        elseif keyCode(rightKey) && positionPick == 2
+                            respFreqnew = respFreq.*downScale;
+                            keyResp(curTrial,1) = 'U';
                         end
                     end
                     
@@ -153,8 +189,8 @@ for k = 1:nTrials
                             rlumVal = 0.5+(0.5*sin(respFreq(i,j)*time+(phaseMat(i,j))));
                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             responseColor = [rlumVal rlumVal rlumVal];
-                            xPos2 = xRSquare+i*75;
-                            yPos2 = yRSquare+j*75;
+                            xPos2 = xRSquares+i*75;
+                            yPos2 = yRSquares+j*75;
                             sideRect = CenterRectOnPointd(baseRect, xPos2, yPos2);
                             Screen('FillRect', window, responseColor, sideRect);
                         end
@@ -162,19 +198,15 @@ for k = 1:nTrials
                     
                     %     rLumVal = sin(respFreq*(GetSecs-pStart));
                     %     reponseColor = [rLumVal rLumVal rLumVal];
-                    %     sideRect = CenterRectOnPointd(rRect, xRSquare,yRSquare);
+                    %     sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquare);
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
                     %     Screen('FillRect', window, reponseColor, sideRect);
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
                     Screen('Flip', window);
                 end
                 respFreq = respFreqnew
-                %%increase staircase counter
-                if curTrial > 1 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
-                    stairCount = stairCount+1
-                elseif curTrial > 1 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
-                    stairCount = stairCount+1
-                end
+                meanRespFreq = sum(respFreq(:))/25;
+                
                 experiment = 1;
                 
                 
@@ -207,12 +239,22 @@ for k = 1:nTrials
     end
     experiment = 3;
     stairCount = 0;
-    mean = 10;
-    mean2 = rand*20;
+    curTrial = 0;
+    meanR = rand*20;
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);
-    KbStrokeWait;
+    %%save stuff
+    means = cat(1,mean.',meanFreqMat,AdaptField);
+    output = cat(1,means,respOut);
+    saveFile = strcat(subj,'.mat');
+    save(saveFile,'output');
+    WaitSecs(3);
+    if k == 5
+        KbStrokeWait;
+    end
 end
+
+
 
 KbStrokeWait;
 
