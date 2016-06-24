@@ -16,6 +16,8 @@ rightKey = KbName('RightArrow');
 leftKey = KbName('LeftArrow');
 enterKey = KbName('RETURN');
 escapeKey = KbName('ESCAPE');
+prompt = 'subject initials:';
+subj = input(prompt);
 %% set mean and sd for stim squares
 % prompt = 'What is the mean frequency value? ';
 % mean = input(prompt);
@@ -41,7 +43,7 @@ yRSquare = yCenter-225;
 rectColor = [1 1 1];
 pStart = GetSecs;
 experiment = 3;
-nTrials =   2;
+nTrials =   25;
 adapTime = 0.2;
 topUp = 1; 
 testTime = 2;
@@ -49,19 +51,31 @@ curTrial = 0;
 upScale = 1.2;
 downScale = 0.8;
 
-keyResp = zeros(50,1);
+keyResp = zeros(60,1);
+respOut = zeros(60,nTrials);
+meanFreqMat = zeros(1,nTrials);
+AdaptField = zeros(1,nTrials);
 stairCount = 0;
 %%do it
-mean = 10;
- sd = 3;
+meanPick = randi([1,5]);
+meanName = strcat('mean',int2str(meanPick));
+meanid = fopen(strcat(meanName,'.txt'));
+mean = fscanf(meanid,'%f');
+
+stairCount = 0;
+%%do it
+
+sd = 3;
 mean2 = rand*20;
 
 phaseMat = abs(rand(5,5).*10);
-reversals = 5;
+reversals = 6;
 
 for k = 1:nTrials
     %% matrix of probabalistically distributed frequencies
-    freqMat = abs(normrnd(mean,sd,5,5)); %%frequency of stim squares
+    freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+    meanFreq = sum(freqMat(:))/25;
+    meanFreqMat(1,k) = meanFreq;
     respFreq = abs(normrnd(mean2,sd,5,5));  %%response square freq
     respFreqnew = respFreq;
     while stairCount <= reversals
@@ -107,6 +121,9 @@ for k = 1:nTrials
                     Screen('Flip', window);
                 end
                 respFreq = respFreqnew;
+                meanRespFreq = sum(respFreq(:))/25;
+                respOut(curTrial,k) = meanRespFreq;
+                
                 if curTrial > 1 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
                     stairCount = stairCount+1
                 elseif curTrial > 1 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
@@ -171,11 +188,8 @@ for k = 1:nTrials
                 end
                 respFreq = respFreqnew
                 %%increase staircase counter
-                if curTrial > 1 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
-                    stairCount = stairCount+1
-                elseif curTrial > 1 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
-                    stairCount = stairCount+1
-                end
+                meanRespFreq = sum(respFreq(:))/25;
+                
                 experiment = 1;
                 
                 
@@ -208,11 +222,19 @@ for k = 1:nTrials
     end
     experiment = 3;
     stairCount = 0;
-    mean = 10;
-    mean2 = rand*20;
+    curTrial = 0;
+    meanR = rand*20;
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);
-    KbStrokeWait;
+    %%save stuff
+    means = cat(1,mean.',meanFreqMat,AdaptField);
+    output = cat(1,means,respOut);
+    saveFile = strcat(subj,'_No_Adapt_',date,'.mat');
+    save(saveFile,'output');
+    WaitSecs(3);
+    if k == 5
+        KbStrokeWait;
+    end
 end
 
 KbStrokeWait;

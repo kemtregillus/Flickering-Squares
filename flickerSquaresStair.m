@@ -246,15 +246,13 @@ for k = 1:nTrials
     %%save stuff
     means = cat(1,mean.',meanFreqMat,AdaptField);
     output = cat(1,means,respOut);
-    saveFile = strcat(subj,'.mat');
+    saveFile = strcat(subj,'_Adapt_',date,'.mat');
     save(saveFile,'output');
     WaitSecs(3);
     if k == 5
         KbStrokeWait;
     end
 end
-
-
 
 KbStrokeWait;
 
