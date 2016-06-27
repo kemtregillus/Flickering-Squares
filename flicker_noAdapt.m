@@ -16,7 +16,7 @@ rightKey = KbName('RightArrow');
 leftKey = KbName('LeftArrow');
 enterKey = KbName('RETURN');
 escapeKey = KbName('ESCAPE');
-prompt = 'subject initials:';
+prompt = 'Subject initials: ';
 subj = input(prompt);
 %% set mean and sd for stim squares
 % prompt = 'What is the mean frequency value? ';
@@ -35,6 +35,11 @@ baseRect = [0 0 65 65]; %%stim squares size
 %rRect = [0 0 100 100]; %%response squares size
 fixation = [0 0 20 20];  %%fixation size
 [xCenter, yCenter] = RectCenter(windowRect);%%center points
+
+Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+
+Screen('Flip', window);
+KbStrokeWait;
 %%%distance away from fixation with these setting is 125 pixels
 xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
 yFSquares = yCenter-225;
@@ -55,7 +60,7 @@ keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
 meanFreqMat = zeros(1,nTrials);
 AdaptField = zeros(1,nTrials);
-stairCount = 0;
+
 %%do it
 meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
@@ -78,7 +83,7 @@ for k = 1:nTrials
     meanFreqMat(1,k) = meanFreq;
     respFreq = abs(normrnd(mean2,sd,5,5));  %%response square freq
     respFreqnew = respFreq;
-    while stairCount <= reversals
+    while stairCount <= reversals && curTrial < 60;
         
         switch  experiment
             
@@ -109,7 +114,9 @@ for k = 1:nTrials
                         elseif keyCode(rightKey)
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                            
+                        elseif keyCode(escapeKey)
+                            close all;
+                            sca;
                         end
                     end
                     
@@ -160,7 +167,9 @@ for k = 1:nTrials
                         elseif keyCode(rightKey)
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                            
+                        elseif keyCode(escapeKey)
+                            close all;
+                            sca;
                         end
                     end
                     
@@ -233,6 +242,9 @@ for k = 1:nTrials
     save(saveFile,'output');
     WaitSecs(3);
     if k == 5
+        Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        
+        Screen('Flip', window);
         KbStrokeWait;
     end
 end

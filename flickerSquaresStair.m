@@ -17,7 +17,7 @@ leftKey = KbName('LeftArrow');
 enterKey = KbName('RETURN');
 escapeKey = KbName('ESCAPE');
 %% set mean and sd for stim squares
-prompt = 'subject initials:';
+prompt = 'Subject initials: ';
 subj = input(prompt);
 % prompt = 'What is the mean frequency value? ';
 % mean = input(prompt);
@@ -36,11 +36,17 @@ baseRect = [0 0 65 65]; %%stim squares size
 fixation = [0 0 20 20];  %%fixation size
 [xCenter, yCenter] = RectCenter(windowRect);%%center points
 
+Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+
+Screen('Flip', window);
+KbStrokeWait;
+    
+
 rectColor = [1 1 1];
 pStart = GetSecs;
 experiment = 3;
 nTrials = 25;
-adapTime = 10;
+adapTime = 30;
 topUp = 5; 
 testTime = 2;
 curTrial = 0;
@@ -125,7 +131,11 @@ for k = 1:nTrials
                         elseif keyCode(rightKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'U';
+                        elseif keyCode(escapeKey)
+                            close all;
+                            sca;
                         end
+                    
                     end
                     
                     
@@ -179,6 +189,9 @@ for k = 1:nTrials
                         elseif keyCode(rightKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'U';
+                        elseif keyCode(escapeKey)
+                            close all;
+                            sca;
                         end
                     end
                     
@@ -229,6 +242,15 @@ for k = 1:nTrials
                             Screen('FillRect', window, rectColor, centeredRect);
                         end
                     end
+                    
+                    KbCheck;
+                    [keyIsDown, seconds, keyCode ]  = KbCheck;
+                    if keyIsDown
+                        if keyCode(escapeKey)
+                            close all;
+                            sca;
+                        end
+                    end
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
                     %     Screen('FillRect', window, reponseC olor, sideRect);
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
@@ -241,6 +263,7 @@ for k = 1:nTrials
     stairCount = 0;
     curTrial = 0;
     meanR = rand*20;
+    
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);
     %%save stuff
@@ -250,6 +273,9 @@ for k = 1:nTrials
     save(saveFile,'output');
     WaitSecs(3);
     if k == 5
+        Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        
+        Screen('Flip', window);
         KbStrokeWait;
     end
 end
