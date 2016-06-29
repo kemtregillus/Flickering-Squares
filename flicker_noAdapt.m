@@ -1,7 +1,7 @@
 %%%%%%%%Code written by Katie Tregillus Spring & summer 2016
 %%%%%%%%This code is designed as a baseline test for each stim level
 %%%%%%%%Contact Katie with questions: kmussell@gmail.com
- 
+
 %% Clear the workspace and the screen
 sca;
 close all;
@@ -50,7 +50,7 @@ pStart = GetSecs;
 experiment = 3;
 nTrials =   25;
 adapTime = 0.2;
-topUp = 1; 
+topUp = 1;
 testTime = 2;
 curTrial = 0;
 upScale = 1.1;
@@ -66,13 +66,8 @@ meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
 mean = fscanf(meanid,'%f');
-
 stairCount = 0;
-%%do it
-
-%sd = 3;
 mean2 = rand*3;
-
 phaseMat = abs(rand(5,5).*10);
 reversals = 6;
 
@@ -84,10 +79,9 @@ for k = 1:nTrials
     meanFreqMat(1,k) = meanFreq;
     respFreq = abs(normrnd(mean2,sd,5,5));  %%response square freq
     respFreqnew = respFreq;
+    
     while stairCount <= reversals && curTrial < 60;
-        
         switch  experiment
-            
             case 1 %%%Adaptation Top-Up
                 pStart = GetSecs;
                 while GetSecs - pStart < topUp
@@ -196,17 +190,15 @@ for k = 1:nTrials
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
                     Screen('Flip', window);
                 end
-                respFreq = respFreqnew
-                
+                respFreq = respFreqnew;
                 meanRespFreq = sum(respFreq(:))/25;
-                
                 experiment = 1;
-                
-                
+               
             case 3 %%%Pre-Adaptation
                 pStart = GetSecs;
                 while GetSecs - pStart < adapTime
                     %% draw squares at at lumdetermined by sine function and timing
+                    %% commented out for the no adapt code
                     time = GetSecs-pStart;
                     %                 for i = 1:5
                     %                     for j = 1:5
@@ -233,18 +225,20 @@ for k = 1:nTrials
     experiment = 3;
     stairCount = 0;
     curTrial = 0;
-    meanR = rand*20;
+    meanR = rand*3;
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);
+    
     %%save stuff
     means = cat(1,mean.',meanFreqMat,AdaptField);
     output = cat(1,means,respOut);
     saveFile = strcat(subj,'_No_Adapt_',date,'.mat');
     save(saveFile,'output');
+    
+   %%pause and give a great every 5 trials
     WaitSecs(3);
-    if k == 5
-        Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
-        
+    if k == 5 || k==10 || k==15 || k == 20
+        Screen('DrawText',window,'Feel free to take a break. Press Key to Continue',xCenter/3,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     end

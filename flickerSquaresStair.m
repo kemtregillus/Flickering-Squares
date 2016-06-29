@@ -30,7 +30,6 @@ black = BlackIndex(screenNumber);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, black+0.5);
 % [window, windowRect] = PsychImaging('OpenWindow',screenNumber,black,[0 0 1000 500 ]);
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
-
 baseRect = [0 0 65 65]; %%stim squares size
 %rRect = [0 0 100 100]; %%response squares size
 fixation = [0 0 20 20];  %%fixation size
@@ -40,8 +39,6 @@ Screen('DrawText',window,'Press arrow keys to indicate which array of squares is
 
 Screen('Flip', window);
 KbStrokeWait;
-    
-
 rectColor = [1 1 1];
 pStart = GetSecs;
 experiment = 3;
@@ -52,7 +49,6 @@ testTime = 2;
 curTrial = 0;
 upScale = 1.1;
 downScale = 0.9;
-
 keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
 meanFreqMat = zeros(1,nTrials);
@@ -63,12 +59,9 @@ meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
 mean = fscanf(meanid,'%f');
-
 meanR = rand*3;
-
 phaseMat = abs(rand(5,5).*10);
 reversals = 6;
-
 frequency = zeros(500,2);
 
 for k = 1:nTrials
@@ -100,7 +93,6 @@ for k = 1:nTrials
     while stairCount <= reversals && curTrial < 60
         
         switch  experiment
-            
             case 1 %%%Adaptation Top-Up
                 pStart = GetSecs;
                 while GetSecs - pStart < topUp
@@ -117,7 +109,6 @@ for k = 1:nTrials
                             Screen('FillRect', window, rectColor, centeredRect);
                         end
                     end
-                    
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
@@ -137,11 +128,7 @@ for k = 1:nTrials
                             close all;
                             sca;
                         end
-                    
                     end
-                    
-                    
-                    
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
                     %     Screen('FillRect', window, reponseColor, sideRect);
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
@@ -196,8 +183,6 @@ for k = 1:nTrials
                             sca;
                         end
                     end
-                    
-                    
                     %% draw response square, fixation point
                     for i = 1:5
                         for j = 1:5
@@ -210,7 +195,6 @@ for k = 1:nTrials
                             Screen('FillRect', window, responseColor, sideRect);
                         end
                     end
-                    
                     %     rLumVal = sin(respFreq*(GetSecs-pStart));
                     %     reponseColor = [rLumVal rLumVal rLumVal];
                     %     sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquare);
@@ -221,25 +205,19 @@ for k = 1:nTrials
                 end
                 respFreq = respFreqnew;
                 meanRespFreq = sum(respFreq(:))/25;
-                
                 experiment = 1;
-                
                 
             case 3 %%%Pre-Adaptation
                 pStart = GetSecs;
                 while GetSecs - pStart < adapTime
                     %% draw squares at at lumdetermined by sin function and timing
                     time = GetSecs-pStart;
-                    
                     for i = 1:5
                         for j = 1:5
                             %%sin wave vals = 0.5 is start y val, meaning it
                             %%shouldn't dip below 0, 0.5 is also amplitude,
                             %%phastMat makes each square start at random phase
                             lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
-                            
-                            
-                            
                             % rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             rectColor = [lumVal lumVal lumVal];
                             xPos = xFSquares+i*75;
@@ -260,10 +238,7 @@ for k = 1:nTrials
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
                     %     Screen('FillRect', window, reponseC olor, sideRect);
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
-                    
                     Screen('Flip', window);
-                    
-                    
                 end
                 experiment = 2;
         end
@@ -272,7 +247,6 @@ for k = 1:nTrials
     stairCount = 0;
     curTrial = 0;
     meanR = rand*3;
-    
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);
     %%save stuff
@@ -280,16 +254,15 @@ for k = 1:nTrials
     output = cat(1,means,respOut);
     saveFile = strcat(subj,'_Adapt_',date,'.mat');
     save(saveFile,'output');
+    %%breaks every 5 trials
     WaitSecs(3);
     if k == 5 || k==10 || k==15 || k == 20
-        Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
-        
+        Screen('DrawText',window,'Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     end
 end
 
 KbStrokeWait;
-
 sca;
 % hist(freqMat);
