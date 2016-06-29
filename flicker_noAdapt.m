@@ -53,8 +53,8 @@ adapTime = 0.2;
 topUp = 1; 
 testTime = 2;
 curTrial = 0;
-upScale = 1.2;
-downScale = 0.8;
+upScale = 1.1;
+downScale = 0.9;
 
 keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
@@ -70,14 +70,15 @@ mean = fscanf(meanid,'%f');
 stairCount = 0;
 %%do it
 
-sd = 3;
-mean2 = rand*20;
+%sd = 3;
+mean2 = rand*3;
 
 phaseMat = abs(rand(5,5).*10);
 reversals = 6;
 
 for k = 1:nTrials
     %% matrix of probabalistically distributed frequencies
+    sd = mean(k,1)/3;
     freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
@@ -147,7 +148,7 @@ for k = 1:nTrials
                     time = GetSecs-pStart;
                     for i = 1:5
                         for j = 1:5
-                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time+(phaseMat(i,j))));
+                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             rectColor = [lumVal lumVal lumVal];
                             xPos = xFSquares+i*75;
@@ -177,7 +178,7 @@ for k = 1:nTrials
                     %% draw response square, fixation point
                     for i = 1:5
                         for j = 1:5
-                            rlumVal = 0.5+(0.5*sin(respFreq(i,j)*time+(phaseMat(i,j))));
+                            rlumVal = 0.5+(0.5*sin(respFreq(i,j)*time*(2*pi)+(phaseMat(i,j))));
                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             responseColor = [rlumVal rlumVal rlumVal];
                             xPos2 = xRSquare+i*75;
@@ -196,7 +197,7 @@ for k = 1:nTrials
                     Screen('Flip', window);
                 end
                 respFreq = respFreqnew
-                %%increase staircase counter
+                
                 meanRespFreq = sum(respFreq(:))/25;
                 
                 experiment = 1;
@@ -205,7 +206,7 @@ for k = 1:nTrials
             case 3 %%%Pre-Adaptation
                 pStart = GetSecs;
                 while GetSecs - pStart < adapTime
-                    %% draw squares at at lumdetermined by sin function and timing
+                    %% draw squares at at lumdetermined by sine function and timing
                     time = GetSecs-pStart;
                     %                 for i = 1:5
                     %                     for j = 1:5

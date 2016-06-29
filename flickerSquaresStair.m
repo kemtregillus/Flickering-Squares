@@ -46,12 +46,12 @@ rectColor = [1 1 1];
 pStart = GetSecs;
 experiment = 3;
 nTrials = 25;
-adapTime = 30;
+adapTime = 10;
 topUp = 5; 
 testTime = 2;
 curTrial = 0;
-upScale = 1.2;
-downScale = 0.8;
+upScale = 1.1;
+downScale = 0.9;
 
 keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
@@ -64,15 +64,17 @@ meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
 mean = fscanf(meanid,'%f');
 
-sd = 3;
-meanR = rand*20;
+meanR = rand*3;
 
 phaseMat = abs(rand(5,5).*10);
 reversals = 6;
 
+frequency = zeros(500,2);
+
 for k = 1:nTrials
     %%puts adapt field either on left or right
     positionPick = randi([1,2]);
+    sd = mean(k,1)/3
 
     if positionPick == 1
         %%%distance away from fixation with these setting is 125 pixels
@@ -90,7 +92,7 @@ for k = 1:nTrials
     end
     
     %% matrix of probabalistically distributed frequencies
-    freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+    freqMat = abs(normrnd(mean(k,1),sd,5,5)) %%frequency of stim squares
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
     respFreq = abs(normrnd(meanR,sd,5,5));  %%response square freq
@@ -106,7 +108,7 @@ for k = 1:nTrials
                     time = GetSecs-pStart;
                     for i = 1:5
                         for j = 1:5
-                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time+(phaseMat(i,j))));
+                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             rectColor = [lumVal lumVal lumVal];
                             xPos = xFSquares+i*75;
@@ -157,14 +159,14 @@ for k = 1:nTrials
                 experiment = 2;
                 
             case 2 %%%Response field
-                curTrial = curTrial+1
+                curTrial = curTrial+1;
                 pStart = GetSecs;
                 while GetSecs - pStart < testTime;
                     %% draw squares at at lum determined by sin function and timing
                     time = GetSecs-pStart;
                     for i = 1:5
                         for j = 1:5
-                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time+(phaseMat(i,j))));
+                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             rectColor = [lumVal lumVal lumVal];
                             xPos = xFSquares+i*75;
@@ -199,7 +201,7 @@ for k = 1:nTrials
                     %% draw response square, fixation point
                     for i = 1:5
                         for j = 1:5
-                            rlumVal = 0.5+(0.5*sin(respFreq(i,j)*time+(phaseMat(i,j))));
+                            rlumVal = 0.5+(0.5*sin(respFreq(i,j)*time*(2*pi)+(phaseMat(i,j))));
                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             responseColor = [rlumVal rlumVal rlumVal];
                             xPos2 = xRSquares+i*75;
@@ -217,7 +219,7 @@ for k = 1:nTrials
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
                     Screen('Flip', window);
                 end
-                respFreq = respFreqnew
+                respFreq = respFreqnew;
                 meanRespFreq = sum(respFreq(:))/25;
                 
                 experiment = 1;
@@ -228,12 +230,16 @@ for k = 1:nTrials
                 while GetSecs - pStart < adapTime
                     %% draw squares at at lumdetermined by sin function and timing
                     time = GetSecs-pStart;
+                    
                     for i = 1:5
                         for j = 1:5
                             %%sin wave vals = 0.5 is start y val, meaning it
                             %%shouldn't dip below 0, 0.5 is also amplitude,
                             %%phastMat makes each square start at random phase
-                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time+(phaseMat(i,j))));
+                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
+                            
+                            
+                            
                             % rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             rectColor = [lumVal lumVal lumVal];
                             xPos = xFSquares+i*75;
@@ -254,7 +260,10 @@ for k = 1:nTrials
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
                     %     Screen('FillRect', window, reponseC olor, sideRect);
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
+                    
                     Screen('Flip', window);
+                    
+                    
                 end
                 experiment = 2;
         end
@@ -262,7 +271,7 @@ for k = 1:nTrials
     experiment = 3;
     stairCount = 0;
     curTrial = 0;
-    meanR = rand*20;
+    meanR = rand*3;
     
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);

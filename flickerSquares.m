@@ -17,8 +17,8 @@ escapeKey = KbName('ESCAPE');
 % mean = input(prompt);
 % prompt2 = 'What is the sd value? ';
 % sd = input(prompt2);
-mean = 20;
-sd = 3;
+mean = 24;
+sd = 0;
 
 % screenNumber = max(screens);
 screenNumber = 0;
@@ -47,7 +47,7 @@ while GetSecs - pStart < 20
     %% draw squares at at lum determined by sin function and timing
     for i = 1:5
         for j = 1:5
-            lumVal = sin(freqMat(i,j)*(GetSecs-pStart));
+            lumVal = 0.5+(0.5*sin(freqMat(i,j)*(GetSecs-pStart))0.5+(0.5*);
             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
             rectColor = [lumVal lumVal lumVal];
             xPos = xFSquares+i*75;
