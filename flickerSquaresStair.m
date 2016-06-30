@@ -44,7 +44,7 @@ curTrial = 0;
 stairCount = 0;
 %% parameters 
 nTrials = 25;
-adapTime = 10;
+adapTime = 30;
 topUp = 5; 
 testTime = 2;
 upScale = 1.1;
@@ -150,9 +150,9 @@ for k = 1:nTrials
                 meanRespFreq = sum(respFreq(:))/25;
                 respOut(curTrial,k) = meanRespFreq;
                 %% increase staircase counter
-                if curTrial > 6 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
+                if curTrial > 4 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
                     stairCount = stairCount+1
-                elseif curTrial > 6 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
+                elseif curTrial > 4 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
                     stairCount = stairCount+1
                 end
                 experiment = 2;
@@ -266,9 +266,9 @@ for k = 1:nTrials
     means = cat(1,mean.',meanFreqMat);
     allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
     allRespFreq = cat(1,allRespFreq,zeros(1,5));
-    output = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
+    outAdapt = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
     saveFile = strcat(subj,'_Adapt_',date,'.mat');
-    save(saveFile,'output');
+    save(saveFile,'outAdapt');
     
     %% breaks every 5 trials
     WaitSecs(3);
