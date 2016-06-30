@@ -1,5 +1,8 @@
-%%%%%%%%Code written by Katie Tregillus Spring & summer 2016
-%%%%%%%%This code is designed to test adaptation to a mean flicker rate
+%%%%%%%%Code written by Katie Tregillus Spring & Summer 2016
+%%%%%%%%This code is designed to test adaptation to temporal changes
+%%%%%%%%using a field of probabalistically distributed flickering squares
+%%%%%%%%and using a staircase procedure (Should be preceeded by
+%%%%%%%%"flicker_noAdapt" code)
 %%%%%%%%Contact Katie with questions: kmussell@gmail.com
  
 %% Clear the workspace and the screen
@@ -16,14 +19,10 @@ rightKey = KbName('RightArrow');
 leftKey = KbName('LeftArrow');
 enterKey = KbName('RETURN');
 escapeKey = KbName('ESCAPE');
-%% set mean and sd for stim squares
+%% get subj 
 prompt = 'Subject initials: ';
 subj = input(prompt);
-% prompt = 'What is the mean frequency value? ';
-% mean = input(prompt);
-% prompt   2 = 'What is the sd value? ';
-% sd = i nput(prompt2);
-
+%% window and screen set up
 screenNumber = max(screens);
 % screenNumber = 0 ;
 black = BlackIndex(screenNumber);
@@ -31,52 +30,54 @@ black = BlackIndex(screenNumber);
 % [window, windowRect] = PsychImaging('OpenWindow',screenNumber,black,[0 0 1000 500 ]);
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 baseRect = [0 0 65 65]; %%stim squares size
-%rRect = [0 0 100 100]; %%response squares size
 fixation = [0 0 20 20];  %%fixation size
 [xCenter, yCenter] = RectCenter(windowRect);%%center points
 
 Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
-
 Screen('Flip', window);
 KbStrokeWait;
+%% basic set up
 rectColor = [1 1 1];
 pStart = GetSecs;
 experiment = 3;
+curTrial = 0;
+stairCount = 0;
+%% parameters 
 nTrials = 25;
 adapTime = 10;
 topUp = 5; 
 testTime = 2;
-curTrial = 0;
 upScale = 1.1;
 downScale = 0.9;
+reversals = 6;
+%% blank matrices for data storage and response tracking
 keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
 meanFreqMat = zeros(1,nTrials);
+sdFreqMat = zeros(1,nTrials);
 AdaptField = zeros(1,nTrials);
-stairCount = 0;
-%%do it
+frequency = zeros(500,2);
+%% means were determined by latin square calculators, and pulled from the 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
 meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
 mean = fscanf(meanid,'%f');
 meanR = rand*3;
+%% phase is randomized, this variable is not stored
 phaseMat = abs(rand(5,5).*10);
-reversals = 6;
-frequency = zeros(500,2);
 
+%% do it 
 for k = 1:nTrials
-    %%puts adapt field either on left or right
+    %% puts adapt field either on left or right
     positionPick = randi([1,2]);
-    sd = mean(k,1)/3
-
-    if positionPick == 1
-        %%%distance away from fixation with these setting is 125 pixels
+    if positionPick == 1 %% adapt field on the left
+        %%distance away from fixation with these setting is 125 pixels
         xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
         yFSquares = yCenter-225;
         xRSquares = xCenter+50;  %%location response squares
         yRSquares = yCenter-225;
         AdaptField(1,k) = 1;
-    else
+    else %% adapt field on the right
         xRSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
         yRSquares = yCenter-225;
         xFSquares = xCenter+50;  %%location response squares
@@ -85,11 +86,15 @@ for k = 1:nTrials
     end
     
     %% matrix of probabalistically distributed frequencies
-    freqMat = abs(normrnd(mean(k,1),sd,5,5)) %%frequency of stim squares
+    sd = mean(k,1)/3;
+    freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
+    sdFreqMat(1,k) = std(freqMat(:));
     respFreq = abs(normrnd(meanR,sd,5,5));  %%response square freq
     respFreqnew = respFreq;
+    
+    %% moves to next trial after after 60, even if staircase isn't resolved
     while stairCount <= reversals && curTrial < 60
         
         switch  experiment
@@ -109,6 +114,7 @@ for k = 1:nTrials
                             Screen('FillRect', window, rectColor, centeredRect);
                         end
                     end
+                    %% key check, Up or Down determined differntly depending on adapt field position
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
@@ -129,15 +135,17 @@ for k = 1:nTrials
                             sca;
                         end
                     end
+                    %% draw fixation
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
                     %     Screen('FillRect', window, reponseColor, sideRect);
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
                     Screen('Flip', window);
                 end
+                %% this ensures that there is only one button response
                 respFreq = respFreqnew;
                 meanRespFreq = sum(respFreq(:))/25;
                 respOut(curTrial,k) = meanRespFreq;
-                %%increase staircase counter
+                %% increase staircase counter
                 if curTrial > 6 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
                     stairCount = stairCount+1
                 elseif curTrial > 6 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
@@ -195,19 +203,17 @@ for k = 1:nTrials
                             Screen('FillRect', window, responseColor, sideRect);
                         end
                     end
-                    %     rLumVal = sin(respFreq*(GetSecs-pStart));
-                    %     reponseColor = [rLumVal rLumVal rLumVal];
-                    %     sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquare);
+                    %% draw fixation
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
-                    %     Screen('FillRect', window, reponseColor, sideRect);
+                    %% screen flip
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
                     Screen('Flip', window);
                 end
                 respFreq = respFreqnew;
                 meanRespFreq = sum(respFreq(:))/25;
                 experiment = 1;
-                
-            case 3 %%%Pre-Adaptation
+                %% stair count only increases after top-up, participants can respond during either phase
+            case 3 %%%Adaptation
                 pStart = GetSecs;
                 while GetSecs - pStart < adapTime
                     %% draw squares at at lumdetermined by sin function and timing
@@ -226,7 +232,7 @@ for k = 1:nTrials
                             Screen('FillRect', window, rectColor, centeredRect);
                         end
                     end
-                    
+                    %% checks for escape key
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
@@ -243,21 +249,36 @@ for k = 1:nTrials
                 experiment = 2;
         end
     end
+    %% Back to the beginning 
     experiment = 3;
     stairCount = 0;
     curTrial = 0;
     meanR = rand*3;
     Screen('FillOval',window, [.75 .75 .75],fixRect);
     Screen('Flip', window);
-    %%save stuff
-    means = cat(1,mean.',meanFreqMat,AdaptField);
-    output = cat(1,means,respOut);
+    
+    %% save stuff
+    means = cat(1,mean.',meanFreqMat);
+    output = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField);
     saveFile = strcat(subj,'_Adapt_',date,'.mat');
     save(saveFile,'output');
-    %%breaks every 5 trials
+    
+    %% breaks every 5 trials
     WaitSecs(3);
-    if k == 5 || k==10 || k==15 || k == 20
-        Screen('DrawText',window,'Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+    if k == 5
+        Screen('DrawText',window,'You are 20% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('Flip', window);
+        KbStrokeWait;
+    elseif k==10
+        Screen('DrawText',window,'You are 40% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('Flip', window);
+        KbStrokeWait;
+    elseif k==15
+        Screen('DrawText',window,'You are 60% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('Flip', window);
+        KbStrokeWait;
+    elseif k==20
+        Screen('DrawText',window,'You are 80% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     end
