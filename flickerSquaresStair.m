@@ -1,8 +1,8 @@
 %%%%%%%%Code written by Katie Tregillus Spring & Summer 2016
 %%%%%%%%This code is designed to test adaptation to temporal changes
 %%%%%%%%using a field of probabalistically distributed flickering squares
-%%%%%%%%and using a staircase procedure (Should be preceeded by
-%%%%%%%%"flicker_noAdapt" code)
+%%%%%%%%and a staircase procedure (Should be preceeded by
+%%%%%%%%"flicker_noAdapt" code to collect baseline)
 %%%%%%%%Contact Katie with questions: kmussell@gmail.com
  
 %% Clear the workspace and the screen
@@ -57,12 +57,14 @@ meanFreqMat = zeros(1,nTrials);
 sdFreqMat = zeros(1,nTrials);
 AdaptField = zeros(1,nTrials);
 frequency = zeros(500,2);
-%% means were determined by latin square calculators, and pulled from the 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
+allAdaptFreq = zeros(1,5); %%stores all the frequency values, will likely never use but that way we have it
+allRespFreq = zeros(1,5);
+%% means were determined by latin square calculators and are pulled from 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
 meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
 mean = fscanf(meanid,'%f');
-meanR = rand*3;
+meanR = rand*3; %starting response mean (mean for test field) is chosen randomly
 %% phase is randomized, this variable is not stored
 phaseMat = abs(rand(5,5).*10);
 
@@ -88,6 +90,7 @@ for k = 1:nTrials
     %% matrix of probabalistically distributed frequencies
     sd = mean(k,1)/3;
     freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+    allAdaptFreq = cat(1,allAdaptFreq,freqMat);
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
     sdFreqMat(1,k) = std(freqMat(:));
@@ -143,6 +146,7 @@ for k = 1:nTrials
                 end
                 %% this ensures that there is only one button response
                 respFreq = respFreqnew;
+                allRespFreq = cat(1,allRespFreq,respFreq);
                 meanRespFreq = sum(respFreq(:))/25;
                 respOut(curTrial,k) = meanRespFreq;
                 %% increase staircase counter
@@ -157,7 +161,7 @@ for k = 1:nTrials
                 curTrial = curTrial+1;
                 pStart = GetSecs;
                 while GetSecs - pStart < testTime;
-                    %% draw squares at at lum determined by sin function and timing
+                    %% draw squares at at lum determined by sine function and timing
                     time = GetSecs-pStart;
                     for i = 1:5
                         for j = 1:5
@@ -220,9 +224,10 @@ for k = 1:nTrials
                     time = GetSecs-pStart;
                     for i = 1:5
                         for j = 1:5
-                            %%sin wave vals = 0.5 is start y val, meaning it
+                            %%sine wave vals = 0.5 is start y val, meaning it
                             %%shouldn't dip below 0, 0.5 is also amplitude,
-                            %%phastMat makes each square start at random phase
+                            %%phastMat makes each square start at random
+                            %%phase, (2*pi) puts the freq in cycles per second 
                             lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
                             % rectColor = [lumVal*rand lumVal*rand lumVal*rand];
                             rectColor = [lumVal lumVal lumVal];
@@ -259,7 +264,9 @@ for k = 1:nTrials
     
     %% save stuff
     means = cat(1,mean.',meanFreqMat);
-    output = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField);
+    allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
+    allRespFreq = cat(1,allRespFreq,zeros(1,5));
+    output = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
     saveFile = strcat(subj,'_Adapt_',date,'.mat');
     save(saveFile,'output');
     

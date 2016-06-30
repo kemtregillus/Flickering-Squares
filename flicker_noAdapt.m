@@ -55,6 +55,8 @@ keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
 meanFreqMat = zeros(1,nTrials);
 sdFreqMat = zeros(1,nTrials);
+allAdaptFreq = zeros(1,5); %%stores all the frequency values, will likely never use but that way we have it
+allRespFreq = zeros(1,5);
 % AdaptField = zeros(1,nTrials); %commented out for no adapt
 frequency = zeros(500,2);
 %% means were determined by latin square calculators, and pulled from the 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
@@ -264,8 +266,10 @@ for k = 1:nTrials
     
     %% save stuff
     means = cat(1,mean.',meanFreqMat);
-    output = struct('means',means,'responses',respOut,'standevs',sdFreqMat);
-    saveFile = strcat(subj,'_Adapt_',date,'.mat');
+    allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
+    allRespFreq = cat(1,allRespFreq,zeros(1,5));
+    output = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
+    saveFile = strcat(subj,'_No_Adapt_',date,'.mat');
     save(saveFile,'output');
     
     %% breaks every 5 trials
