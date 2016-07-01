@@ -33,7 +33,8 @@ baseRect = [0 0 65 65]; %%stim squares size
 fixation = [0 0 20 20];  %%fixation size
 [xCenter, yCenter] = RectCenter(windowRect);%%center points
 
-Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
+Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly',xCenter/4,yCenter,[1 1 1])
+Screen('DrawText',window,'Press Key to Continue',xCenter-150,yCenter+30,[1 1 1])
 Screen('Flip', window);
 KbStrokeWait;
 %% basic set up
@@ -273,24 +274,26 @@ for k = 1:nTrials
     %% breaks every 5 trials
     WaitSecs(3);
     if k == 5
-        Screen('DrawText',window,'You are 20% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('DrawText',window,'You are 20% done. Feel free to take a break. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     elseif k==10
-        Screen('DrawText',window,'You are 40% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('DrawText',window,'You are 40% done. Feel free to take a break. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     elseif k==15
-        Screen('DrawText',window,'You are 60% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('DrawText',window,'You are 60% done. Feel free to take a break. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     elseif k==20
-        Screen('DrawText',window,'You are 80% done. Feel free to take a break. Press Key to Continue',xCenter/2.5,yCenter,[1 1 1])
+        Screen('DrawText',window,'You are 80% done. Feel free to take a break. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
         Screen('Flip', window);
         KbStrokeWait;
     end
 end
 
+Screen('DrawText',window,'You are done. Thank you for participating. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
+Screen('Flip', window);
 KbStrokeWait;
 sca;
 % hist(freqMat);
