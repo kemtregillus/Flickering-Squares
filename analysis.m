@@ -3,12 +3,12 @@
 
 clear all
 close all
+% 
+% load 'SC_No_Adapt_01-Jul-2016.mat'
+% load 'SC_Adapt_01-Jul-2016.mat'
 
-load 'SC_No_Adapt_01-Jul-2016.mat'
-load 'SC_Adapt_01-Jul-2016.mat'
-
-% load 'KT_No_Adapt_01-Jul-2016.mat'
-% load 'KT_Adapt_01-Jul-2016.mat'
+load 'KT_No_Adapt_01-Jul-2016.mat'
+load 'KT_Adapt_01-Jul-2016.mat'
 
 NrespsNoAdapt = zeros(1,25);
 respMeansNoAdapt = zeros(1,25);
@@ -63,7 +63,7 @@ plot(outNoAdapt.means(2,:),f,'--r')
 hold on
 plot(outAdapt.means(1,:),outAdapt.means(1,:),'-k')
 axis('equal')
-axis([0 3.5 0 3.5])
+axis([0 5 0 5])
 xlabel('Adapt Level (Hz)')
 ylabel('Response (Hz)')
 legend('Adapt','No Adapt','Location','NorthWest')
@@ -109,7 +109,7 @@ meanAll(1,2) = sum(mean09)/5;
 meanAll(1,3) = sum(mean16)/5;
 meanAll(1,4) = sum(mean23)/5;
 meanAll(1,5) = sum(mean3)/5;
-xNA = [0.2 0.9 1.6 2.3 3]
+xNA = [0.2 0.9 1.6 2.3 3];
 scatter(xNA,meanAll,'bo')
 
 hold on
@@ -153,7 +153,7 @@ meanAll(1,2) = sum(mean09)/5;
 meanAll(1,3) = sum(mean16)/5;
 meanAll(1,4) = sum(mean23)/5;
 meanAll(1,5) = sum(mean3)/5;
-xNA = [0.2 0.9 1.6 2.3 3]
+xNA = [0.2 0.9 1.6 2.3 3];
 scatter(xNA,meanAll,'ro')
 
 hold on
