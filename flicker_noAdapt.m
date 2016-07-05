@@ -125,18 +125,18 @@ for k = 1:nTrials
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
-                        if keyCode(leftKey) %&& positionPick ==1
+                        if keyCode(leftKey) && positionPick ==1
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
-%                         elseif keyCode(leftKey) && positionPick == 2
-%                             respFreqnew = respFreq.*downScale;
-%                             keyResp(curTrial,1) = 'D';
-                        elseif keyCode(rightKey) %&& positionPick == 1
+                        elseif keyCode(leftKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-%                         elseif keyCode(rightKey) && positionPick == 2
-%                             respFreqnew = respFreq.*upScale;
-%                             keyResp(curTrial,1) = 'U';
+                        elseif keyCode(rightKey) && positionPick == 1
+                            respFreqnew = respFreq.*downScale;
+                            keyResp(curTrial,1) = 'D';
+                        elseif keyCode(rightKey) && positionPick == 2
+                            respFreqnew = respFreq.*upScale;
+                            keyResp(curTrial,1) = 'U';
                         elseif keyCode(escapeKey)
                             close all;
                             sca;
@@ -182,18 +182,18 @@ for k = 1:nTrials
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
-                        if keyCode(leftKey) %&& positionPick ==1
+                        if keyCode(leftKey) && positionPick ==1
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
-%                         elseif keyCode(leftKey) && positionPick == 2
-%                             respFreqnew = respFreq.*downScale;
-%                             keyResp(curTrial,1) = 'D';
-                        elseif keyCode(rightKey) %&& positionPick == 1
+                        elseif keyCode(leftKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-%                         elseif keyCode(rightKey) && positionPick == 2
-%                             respFreqnew = respFreq.*upScale;
-%                             keyResp(curTrial,1) = 'U';
+                        elseif keyCode(rightKey) && positionPick == 1
+                            respFreqnew = respFreq.*downScale;
+                            keyResp(curTrial,1) = 'D';
+                        elseif keyCode(rightKey) && positionPick == 2
+                            respFreqnew = respFreq.*upScale;
+                            keyResp(curTrial,1) = 'U';
                         elseif keyCode(escapeKey)
                             close all;
                             sca;

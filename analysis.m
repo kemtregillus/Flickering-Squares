@@ -4,16 +4,16 @@
 clear all
 close all
 % 
-% load 'SC_No_Adapt_01-Jul-2016.mat'
-% load 'SC_Adapt_01-Jul-2016.mat'
+load 'SC_No_Adapt_01-Jul-2016.mat'
+load 'SC_Adapt_01-Jul-2016.mat'
 % 
 % load 'KT_No_Adapt_01-Jul-2016.mat'
 % load 'KT_Adapt_01-Jul-2016.mat'
-
+% 
 % load 'AA_No_Adapt_04-Jul-2016.mat'
 
-load 'wk_No_Adapt_04-Jul-2016.mat'
-load 'wk_Adapt_05-Jul-2016.mat'
+% load 'wk_No_Adapt_04-Jul-2016.mat'
+% load 'wk_Adapt_05-Jul-2016.mat'
 
 NrespsNoAdapt = zeros(1,25);
 respMeansNoAdapt = zeros(1,25);
@@ -108,14 +108,22 @@ for i = 1:25
         mean3(1,count3) = respMeansAdapt(i);
     end
 end
+stanError = zeros(1,5);
 
 meanAll(1,1) = sum(mean02)/5;
+stanError(1,1) = std(mean02)/sqrt(5);
 meanAll(1,2) = sum(mean09)/5;
+stanError(1,2) = std(mean09)/sqrt(5);
 meanAll(1,3) = sum(mean16)/5;
+stanError(1,3) = std(mean16)/sqrt(5);
 meanAll(1,4) = sum(mean23)/5;
+stanError(1,4) = std(mean23)/sqrt(5);
 meanAll(1,5) = sum(mean3)/5;
+stanError(1,5) = std(mean3)/sqrt(5);
 xNA = [0.2 0.9 1.6 2.3 3];
 scatter(xNA,meanAll,'bo')
+hold on
+errorbar(xNA,meanAll,stanError,'b')
 
 hold on
 mean02 = zeros(1,5);
@@ -153,13 +161,22 @@ for i = 1:25
     end
 end
 
+stanError = zeros(1,5);
+
 meanAll(1,1) = sum(mean02)/5;
+stanError(1,1) = std(mean02)/sqrt(5);
 meanAll(1,2) = sum(mean09)/5;
+stanError(1,2) = std(mean09)/sqrt(5);
 meanAll(1,3) = sum(mean16)/5;
+stanError(1,3) = std(mean16)/sqrt(5);
 meanAll(1,4) = sum(mean23)/5;
+stanError(1,4) = std(mean23)/sqrt(5);
 meanAll(1,5) = sum(mean3)/5;
+stanError(1,5) = std(mean3)/sqrt(5);
 xNA = [0.2 0.9 1.6 2.3 3];
 scatter(xNA,meanAll,'ro')
+hold on
+errorbar(xNA,meanAll,stanError,'r')
 
 hold on
    
@@ -170,4 +187,4 @@ axis('equal')
 axis([0 3.5 0 3.5])
 xlabel('Adapt Level (Hz)')
 ylabel('Response (Hz)')
-legend('Adapt','No Adapt','Location','NorthWest')
+legend('Adapt','Stan. Error','No Adapt','Location','NorthWest')
