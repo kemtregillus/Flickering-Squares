@@ -59,7 +59,7 @@ meanFreqMat = zeros(1,nTrials);
 sdFreqMat = zeros(1,nTrials);
 allAdaptFreq = zeros(1,5); %%stores all the frequency values, will likely never use but that way we have it
 allRespFreq = zeros(1,5);
-% AdaptField = zeros(1,nTrials); %commented out for no adapt
+AdaptField = zeros(1,nTrials); 
 frequency = zeros(500,2);
 %% means were determined by latin square calculators, and pulled from the 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
 meanPick = randi([1,5]);
@@ -73,22 +73,22 @@ phaseMat = abs(rand(5,5).*10);
 %% do it 
 for k = 1:nTrials
     %% puts adapt field either on left or right
-    %%commented out for no adapt
-    %     positionPick = randi([1,2]);
-    %     if positionPick == 1 %% adapt field on the left
-    %%distance away from fixation with these setting is 125 pixels
-    xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
-    yFSquares = yCenter-225;
-    xRSquares = xCenter+50;  %%location response squares
-    yRSquares = yCenter-225;
-    %         AdaptField(1,k) = 1;
-    %     else %% adapt field on the right
-    %         xRSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
-    %         yRSquares = yCenter-225;
-    %         xFSquares = xCenter+50;  %%location response squares
-    %         yFSquares = yCenter-225;
-    %         AdaptField(1,k) = 2;
-    %     end
+    
+    positionPick = randi([1,2]);
+    if positionPick == 1 %% adapt field on the left
+        %%distance away from fixation with these setting is 125 pixels
+        xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
+        yFSquares = yCenter-225;
+        xRSquares = xCenter+50;  %%location response squares
+        yRSquares = yCenter-225;
+        AdaptField(1,k) = 1;
+    else %% adapt field on the right
+        xRSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
+        yRSquares = yCenter-225;
+        xFSquares = xCenter+50;  %%location response squares
+        yFSquares = yCenter-225;
+        AdaptField(1,k) = 2;
+    end
     
     %% matrix of probabalistically distributed frequencies
     sd = mean(k,1)/3;
@@ -270,7 +270,7 @@ for k = 1:nTrials
     means = cat(1,mean.',meanFreqMat);
     allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
     allRespFreq = cat(1,allRespFreq,zeros(1,5));
-    outNoAdapt = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
+    outNoAdapt = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
     saveFile = strcat(subj,'_No_Adapt_',date,'.mat');
     save(saveFile,'outNoAdapt');
     

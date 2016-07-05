@@ -6,9 +6,13 @@ close all
 % 
 % load 'SC_No_Adapt_01-Jul-2016.mat'
 % load 'SC_Adapt_01-Jul-2016.mat'
-
-load 'KT_No_Adapt_01-Jul-2016.mat'
+% 
+% load 'KT_No_Adapt_01-Jul-2016.mat'
 load 'KT_Adapt_01-Jul-2016.mat'
+
+% load 'AA_No_Adapt_04-Jul-2016.mat'
+
+load 'wk_No_Adapt_04-Jul-2016.mat'
 
 NrespsNoAdapt = zeros(1,25);
 respMeansNoAdapt = zeros(1,25);
@@ -63,7 +67,7 @@ plot(outNoAdapt.means(2,:),f,'--r')
 hold on
 plot(outAdapt.means(1,:),outAdapt.means(1,:),'-k')
 axis('equal')
-axis([0 5 0 5])
+axis([0 3.5 0 3.5])
 xlabel('Adapt Level (Hz)')
 ylabel('Response (Hz)')
 legend('Adapt','No Adapt','Location','NorthWest')
