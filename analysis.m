@@ -4,13 +4,14 @@
 clear all
 close all
 % 
-load 'SC_No_Adapt_01-Jul-2016.mat'
-load 'SC_Adapt_01-Jul-2016.mat'
+% load 'SC_No_Adapt_01-Jul-2016.mat'
+% load 'SC_Adapt_01-Jul-2016.mat'
 % 
 % load 'KT_No_Adapt_01-Jul-2016.mat'
 % load 'KT_Adapt_01-Jul-2016.mat'
 % 
-% load 'AA_No_Adapt_04-Jul-2016.mat'
+load 'AA_No_Adapt_04-Jul-2016.mat'
+load 'AA_Adapt_05-Jul-2016.mat'
 
 % load 'wk_No_Adapt_04-Jul-2016.mat'
 % load 'wk_Adapt_05-Jul-2016.mat'
