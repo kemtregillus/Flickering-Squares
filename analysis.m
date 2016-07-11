@@ -10,11 +10,14 @@ close all
 % load 'KT_No_Adapt_01-Jul-2016.mat'
 % load 'KT_Adapt_01-Jul-2016.mat'
 % 
-load 'AA_No_Adapt_04-Jul-2016.mat'
-load 'AA_Adapt_05-Jul-2016.mat'
+% load 'AA_No_Adapt_04-Jul-2016.mat'
+% load 'AA_Adapt_05-Jul-2016.mat'
 
 % load 'wk_No_Adapt_04-Jul-2016.mat'
 % load 'wk_Adapt_05-Jul-2016.mat'
+
+load 'ST_No_Adapt_11-Jul-2016.mat'
+load 'ST_Adapt_11-Jul-2016.mat'
 
 NrespsNoAdapt = zeros(1,25);
 respMeansNoAdapt = zeros(1,25);
@@ -84,7 +87,7 @@ count02 = 0;
 count09 = 0;
 count16 = 0;
 count23 = 0;
-count3 = 1;
+count3 = 0;
 meanAll = zeros(1,5);
 
 for i = 1:25
@@ -109,8 +112,8 @@ for i = 1:25
         mean3(1,count3) = respMeansAdapt(i);
     end
 end
-stanError = zeros(1,5);
 
+stanError = zeros(1,5);
 meanAll(1,1) = sum(mean02)/5;
 stanError(1,1) = std(mean02)/sqrt(5);
 meanAll(1,2) = sum(mean09)/5;
