@@ -61,7 +61,7 @@ AdaptField = zeros(1,nTrials);
 frequency = zeros(500,2);
 allAdaptFreq = zeros(1,5); %%stores all the frequency values, will likely never use but that way we have it
 allRespFreq = zeros(1,5);
-%% means were determined by latin square calculators and are pulled from 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
+%% means were determined by latin square calculator and are pulled from 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
 meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
