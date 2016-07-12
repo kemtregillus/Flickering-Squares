@@ -16,8 +16,10 @@ close all
 % load 'wk_No_Adapt_04-Jul-2016.mat'
 % load 'wk_Adapt_05-Jul-2016.mat'
 
-load 'ST_No_Adapt_11-Jul-2016.mat'
+% load 'ST_No_Adapt_11-Jul-2016.mat'
 load 'ST_Adapt_11-Jul-2016.mat'
+
+load 'HG_No_Adapt_11-Jul-2016.mat'
 
 NrespsNoAdapt = zeros(1,25);
 respMeansNoAdapt = zeros(1,25);

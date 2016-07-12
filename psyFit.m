@@ -15,20 +15,7 @@ load 'KT_Adapt_01-Jul-2016.mat'
 
 % load 'ST_No_Adapt_11-Jul-2016.mat'
 countUp = zeros(60,25);
-countDown = zeros(60,25);
-
-
-for i = 2:60
-    for j = 1:25
-        if outAdapt.responses(i,j) > outAdapt.responses(i-1,j)
-            countUp(i,j) = 1;
-        elseif outAdapt.responses(i,j) < outAdapt.responses(i-1,j)
-            countUp(i,j) = 0;
-        end
-    end
-end
-
-% scatter(outAdapt.responses(1:18,1),countUp(1:18,1))
+bins = zeros(60,0);
 
 NrespsAdapt = zeros(1,25);
 %% calculate mean of last 4 responses for No Adapt condition
@@ -39,54 +26,184 @@ for i = 1:25
         end
     end
 end
+for i = 2:60
+    for j = 1:25
+        if outAdapt.responses(i,j) > outAdapt.responses(i-1,j)
+            countUp(i-1,j) = 0;
+        elseif outAdapt.responses(i,j) < outAdapt.responses(i-1,j)
+            countUp(i-1,j) = 1;
+        end
+        %%%%start here for updates
+        edges = [0 0.2 0.9 1.25 1.6 2.3 3];
+        [N,edges,bin]=histcounts(outAdapt.responses(1:NrespsAdapt(j),j),edges);
+        bins(1:NrespsAdapt(j),j) = bin;
+    end
+end
 
 count02 = 0;
-count09 = 0;
-count16 = 0;
-count23 = 0;
-count3 = 0;
+persUp02 = zeros(60,5);
+binNum02 = zeros(60,5);
+
+
 for j = 1:25
-    for i = 1:NrespsAdapt(i)
-        if outAdapt.means(1,i) == [0.200000000000000]
-            count02 = count02+1;
-            mean02(1,count02) = respMeansAdapt(i);
-        end
-        if outAdapt.means(1,i) == [0.900000000000000]
-            count09 = count09+1;
-            mean09(1,count09) = respMeansAdapt(i);
-        end
-        if outAdapt.means(1,i) == [1.60000000000000]
-            count16 = count16+1;
-            mean16(1,count16) = respMeansAdapt(i);
-        end
-        if outAdapt.means(1,i) == [2.30000000000000]
-            count23 = count23+1;
-            mean23(1,count23) = respMeansAdapt(i);
-        end
-        if outAdapt.means(1,i) == [3]
-            count3 = count3+1;
-            mean3(1,count3) = respMeansAdapt(i);
+    if outAdapt.means(1,j) == 1.60000000000000
+        count02 = count02+1;
+        persUp02(:,count02) = countUp(:,j);
+        binNum02(:,count02) = bins(:,j);
+    end
+end
+
+pers1 = 0;
+pers2 = 0;
+pers3 = 0;
+pers4 = 0;
+pers5 = 0;
+pers6 = 0;
+pers7 = 0;
+c1 = 0;
+c2 = 0;
+c3 = 0;
+c4 = 0;
+c5 = 0;
+c6 = 0;
+c7 = 0;
+
+for i = 1:5
+    for j = 1:60
+        if binNum02(j,i) == 1
+            c1 = c1+1;
+            pers1 = pers1+persUp02(j,i);
+        elseif binNum02(j,i) == 2
+            c2 = c2+1;
+            pers2 = pers2+persUp02(j,i);
+        elseif binNum02(j,i) == 3
+            c3 = c3+1;
+            pers3 = pers3+persUp02(j,i);
+        elseif binNum02(j,i) == 4
+            c4 = c4+1;
+            pers4 = pers4+persUp02(j,i);
+        elseif binNum02(j,i) == 5
+            c5 = c5+1;
+            pers5 = pers5+persUp02(j,i);
+        elseif binNum02(j,i) == 6
+            c6 = c6+1;
+            pers6 = pers6+persUp02(j,i);
+        elseif binNum02(j,i) == 7
+            c7 = c7+1;
+            pers7 = pers7+persUp02(j,i);
         end
     end
 end
 
+pers1 = pers1/c1;
+pers2 = pers2/c2;
+pers3 = pers3/c3;
+pers4 = pers4/c4;
+pers5 = pers5/c5;
+pers6 = pers6/c6;
+pers7 = pers7/c7;
 
-% 
-% percentUp = zeros(1,25);
-% 
-% for i = 1:25
-%     percentUp(i) = (countUp(i)/NrespsAdapt(i))*100;
-% end
-% 
-% respMeansAdapt = zeros(1,25);
-% 
-% for i = 1:25
-%     if NrespsAdapt(i) ~= 0
-%         prods = outAdapt.responses(NrespsAdapt(i)-3:NrespsAdapt(i),i);
-%         sum1 = sum(prods);
-%         respMeansAdapt(i) = sum1/4;
-%     else
-%         respMeansAdapt(i) = 0;
-%     end
-% end
+scatter([0 1 2 3 4 5 6],[pers1 pers2 pers3 pers4 pers5 pers6 pers7])
+            
 
+countUp = zeros(60,25);
+bins = zeros(60,0);
+
+NrespsAdapt = zeros(1,25);
+%% calculate mean of last 4 responses for No Adapt condition
+for i = 1:25
+    for j = 1:60
+        if outNoAdapt.responses(j,i) ~= 0
+            NrespsAdapt(i) = NrespsAdapt(i)+1;
+        end
+    end
+end
+for i = 2:60
+    for j = 1:25
+        if outNoAdapt.responses(i,j) > outNoAdapt.responses(i-1,j)
+            countUp(i-1,j) = -1;
+        elseif outNoAdapt.responses(i,j) < outNoAdapt.responses(i-1,j)
+            countUp(i-1,j) = 1;
+        end
+        %%%%start here for updates
+        edges = [0 0.2 0.9 1.25 1.6 2.3 3];
+        [N,edges,bin]=histcounts(outNoAdapt.responses(1:NrespsAdapt(j),j),edges);
+        bins(1:NrespsAdapt(j),j) = bin;
+    end
+end
+
+count02 = 0;
+persUp02 = zeros(60,5);
+binNum02 = zeros(60,5);
+
+
+for j = 1:25
+    if outNoAdapt.means(1,j) == 1.60000000000000
+        count02 = count02+1;
+        persUp02(:,count02) = countUp(:,j);
+        binNum02(:,count02) = bins(:,j);
+    end
+end
+
+pers1 = 0;
+pers2 = 0;
+pers3 = 0;
+pers4 = 0;
+pers5 = 0;
+pers6 = 0;
+pers7 = 0;
+c1 = 0;
+c2 = 0;
+c3 = 0;
+c4 = 0;
+c5 = 0;
+c6 = 0;
+c7 = 0;
+
+for i = 1:5
+    for j = 1:60
+        if binNum02(j,i) == 1
+            c1 = c1+1;
+            pers1 = pers1+persUp02(j,i);
+        elseif binNum02(j,i) == 2
+            c2 = c2+1;
+            pers2 = pers2+persUp02(j,i);
+        elseif binNum02(j,i) == 3
+            c3 = c3+1;
+            pers3 = pers3+persUp02(j,i);
+        elseif binNum02(j,i) == 4
+            c4 = c4+1;
+            pers4 = pers4+persUp02(j,i);
+        elseif binNum02(j,i) == 5
+            c5 = c5+1;
+            pers5 = pers5+persUp02(j,i);
+        elseif binNum02(j,i) == 6
+            c6 = c6+1;
+            pers6 = pers6+persUp02(j,i);
+        elseif binNum02(j,i) == 7
+            c7 = c7+1;
+            pers7 = pers7+persUp02(j,i);
+        end
+    end
+end
+
+pers1 = pers1/c1;
+pers2 = pers2/c2;
+pers3 = pers3/c3;
+pers4 = pers4/c4;
+pers5 = pers5/c5;
+pers6 = pers6/c6;
+pers7 = pers7/c7;
+
+hold on
+scatter([0 1 2 3 4 5 6],[pers1 pers2 pers3 pers4 pers5 pers6 pers7])
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
