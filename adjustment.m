@@ -1,10 +1,3 @@
-%%%%%%%%Code written by Katie Tregillus Spring & Summer 2016
-%%%%%%%%This code is designed to test adaptation to temporal changes
-%%%%%%%%using a field of probabalistically distributed flickering squares
-%%%%%%%%and a staircase procedure (Should be preceeded by
-%%%%%%%%"flicker_noAdapt" code to collect baseline)
-%%%%%%%%Contact Katie with questions: kmussell@gmail.com
- 
 %% Clear the workspace and the screen
 sca;
 close all;
@@ -15,9 +8,10 @@ screens = Screen('Screens');
 Screen('Preference', 'SkipSyncTests', 1);
 %% set up keys
 KbName('UnifyKeyNames');
-rightKey = KbName('RightArrow');
-leftKey = KbName('LeftArrow');
+upKey = KbName('UpArrow');
+downKey = KbName('DownArrow');
 enterKey = KbName('RETURN');
+spaceKey = KbName('SPACE');
 escapeKey = KbName('ESCAPE');
 %% get subj 
 prompt = 'Subject initials: ';
@@ -30,6 +24,7 @@ black = BlackIndex(screenNumber);
 % [window, windowRect] = PsychImaging('OpenWindow',screenNumber,black,[0 0 1000 500 ]);
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 baseRect = [0 0 65 65]; %%stim squares size
+rRect = [0 0 100 100];
 fixation = [0 0 20 20];  %%fixation size
 [xCenter, yCenter] = RectCenter(windowRect);%%center points
 
@@ -46,8 +41,8 @@ curTrial = 0;
 stairCount = 0;
 %% parameters 
 nTrials = 25;
-adapTime = 30;
-topUp = 5; 
+adapTime = .5;
+topUp = 1; 
 testTime = 2;
 upScale = 1.1;
 downScale = 0.9;
@@ -60,7 +55,7 @@ sdFreqMat = zeros(1,nTrials);
 AdaptField = zeros(1,nTrials);
 frequency = zeros(500,2);
 allAdaptFreq = zeros(1,5); %%stores all the frequency values, will likely never use but that way we have it
-allRespFreq = zeros(1,5);
+allRespFreq = zeros(1,1);
 %% means were determined by latin square calculator and are pulled from 5 pre-made .txt files: mean1.txt, mean2.txt, etc...
 meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
@@ -78,12 +73,12 @@ for k = 1:nTrials
         %%distance away from fixation with these setting is 125 pixels
         xFSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
         yFSquares = yCenter-225;
-        xRSquares = xCenter+50;  %%location response squares
-        yRSquares = yCenter-225;
+        xRSquares = xCenter+175;  %%location response squares
+        yRSquares = yCenter;
         AdaptField(1,k) = 1;
     else %% adapt field on the right
-        xRSquares = xCenter-500;  %%location stim squares - overall width of square matix is 375
-        yRSquares = yCenter-225;
+        xRSquares = xCenter-175;  %%location stim squares - overall width of square matix is 375
+        yRSquares = yCenter;
         xFSquares = xCenter+50;  %%location response squares
         yFSquares = yCenter-225;
         AdaptField(1,k) = 2;
@@ -96,7 +91,7 @@ for k = 1:nTrials
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
     sdFreqMat(1,k) = std(freqMat(:));
-    respFreq = abs(normrnd(meanR,sd,5,5));  %%response square freq
+    respFreq = abs(rand*4);  %%response square freq
     respFreqnew = respFreq;
     
     %% moves to next trial after after 60, even if staircase isn't resolved
@@ -123,21 +118,23 @@ for k = 1:nTrials
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
-                        if keyCode(leftKey) && positionPick ==1
+                        if keyCode(upKey) && positionPick ==1
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
-                        elseif keyCode(leftKey) && positionPick == 2
+                        elseif keyCode(downKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                        elseif keyCode(rightKey) && positionPick == 1
+                        elseif keyCode(downKey) && positionPick == 1
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                        elseif keyCode(rightKey) && positionPick == 2
+                        elseif keyCode(upKey) && positionPick == 2
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
                         elseif keyCode(escapeKey)
                             close all;
                             sca;
+                        elseif keyCode(spaceKey)
+                            stairCount = 7;
                         end
                     end
                     %% draw fixation
@@ -149,7 +146,7 @@ for k = 1:nTrials
                 %% this ensures that there is only one button response
                 respFreq = respFreqnew;
                 allRespFreq = cat(1,allRespFreq,respFreq);
-                meanRespFreq = sum(respFreq(:))/25;
+                meanRespFreq = sum(respFreq(:));
                 respOut(curTrial,k) = meanRespFreq;
                 %% increase staircase counter
                 if curTrial > 4 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
@@ -165,6 +162,7 @@ for k = 1:nTrials
                 while GetSecs - pStart < testTime;
                     %% draw squares at at lum determined by sine function and timing
                     time = GetSecs-pStart;
+                    
                     for i = 1:5
                         for j = 1:5
                             lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
@@ -180,43 +178,41 @@ for k = 1:nTrials
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
                     if keyIsDown
-                        if keyCode(leftKey) && positionPick ==1
+                        if keyCode(upKey) && positionPick ==1
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
-                        elseif keyCode(leftKey) && positionPick == 2
+                        elseif keyCode(downKey) && positionPick == 2
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                        elseif keyCode(rightKey) && positionPick == 1
+                        elseif keyCode(downKey) && positionPick == 1
                             respFreqnew = respFreq.*downScale;
                             keyResp(curTrial,1) = 'D';
-                        elseif keyCode(rightKey) && positionPick == 2
+                        elseif keyCode(upKey) && positionPick == 2
                             respFreqnew = respFreq.*upScale;
                             keyResp(curTrial,1) = 'U';
                         elseif keyCode(escapeKey)
                             close all;
                             sca;
+                        elseif keyCode(spaceKey)
+                            stairCount = 7;
                         end
                     end
+                    
                     %% draw response square, fixation point
-                    for i = 1:5
-                        for j = 1:5
-                            rlumVal = 0.5+(0.5*sin(respFreq(i,j)*time*(2*pi)+(phaseMat(i,j))));
-                            %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
-                            responseColor = [rlumVal rlumVal rlumVal];
-                            xPos2 = xRSquares+i*75;
-                            yPos2 = yRSquares+j*75;
-                            sideRect = CenterRectOnPointd(baseRect, xPos2, yPos2);
-                            Screen('FillRect', window, responseColor, sideRect);
-                        end
-                    end
+                    rLumVal = 0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)));
+                    reponseColor = [rLumVal rLumVal rLumVal];
+                    sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquares);
+                    Screen('FillRect', window, reponseColor, sideRect);
+                    
+                    
                     %% draw fixation
                     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
-                    %% screen flip
                     Screen('FillOval',window, [.75 .75 .75],fixRect);
-                    Screen('Flip', window);
+                    %% screen flip
+                     Screen('Flip', window);
                 end
                 respFreq = respFreqnew;
-                meanRespFreq = sum(respFreq(:))/25;
+                meanRespFreq = sum(respFreq(:));
                 experiment = 1;
                 %% stair count only increases after top-up, participants can respond during either phase
             case 3 %%%Adaptation
@@ -224,21 +220,21 @@ for k = 1:nTrials
                 while GetSecs - pStart < adapTime
                     %% draw squares at at lumdetermined by sin function and timing
                     time = GetSecs-pStart;
-                    for i = 1:5
-                        for j = 1:5
-                            %%sine wave vals = 0.5 is start y val, meaning it
-                            %%shouldn't dip below 0, 0.5 is also amplitude,
-                            %%phastMat makes each square start at random
-                            %%phase, (2*pi) puts the freq in cycles per second 
-                            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
-                            % rectColor = [lumVal*rand lumVal*rand lumVal*rand];
-                            rectColor = [lumVal lumVal lumVal];
-                            xPos = xFSquares+i*75;
-                            yPos = yFSquares+j*75;
-                            centeredRect = CenterRectOnPointd(baseRect, xPos, yPos);
-                            Screen('FillRect', window, rectColor, centeredRect);
-                        end
-                    end
+%                     for i = 1:5
+%                         for j = 1:5
+%                             %%sine wave vals = 0.5 is start y val, meaning it
+%                             %%shouldn't dip below 0, 0.5 is also amplitude,
+%                             %%phastMat makes each square start at random
+%                             %%phase, (2*pi) puts the freq in cycles per second 
+%                             lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
+%                             % rectColor = [lumVal*rand lumVal*rand lumVal*rand];
+%                             rectColor = [lumVal lumVal lumVal];
+%                             xPos = xFSquares+i*75;
+%                             yPos = yFSquares+j*75;
+%                             centeredRect = CenterRectOnPointd(baseRect, xPos, yPos);
+%                             Screen('FillRect', window, rectColor, centeredRect);
+%                         end
+%                     end
                     %% checks for escape key
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
@@ -267,7 +263,7 @@ for k = 1:nTrials
     %% save stuff
     means = cat(1,mean.',meanFreqMat);
     allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
-    allRespFreq = cat(1,allRespFreq,zeros(1,5));
+    allRespFreq = cat(1,allRespFreq,zeros(1,1));
     outAdapt = struct('means',means,'responses',respOut,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq,'allRespFreq',allRespFreq);
     saveFile = strcat(subj,'_Adapt_',date,'.mat');
     save(saveFile,'outAdapt');

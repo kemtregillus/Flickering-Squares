@@ -34,7 +34,7 @@ for i = 2:60
             countUp(i-1,j) = 1;
         end
         %%%%start here for updates
-        edges = [0 0.2 0.9 1.25 1.6 2.3 3];
+        edges = [0 0.1 0.2 0.4 0.7 1.1 1.6 2.2 2.9 3.7];
         [N,edges,bin]=histcounts(outAdapt.responses(1:NrespsAdapt(j),j),edges);
         bins(1:NrespsAdapt(j),j) = bin;
     end
@@ -46,7 +46,7 @@ binNum02 = zeros(60,5);
 
 
 for j = 1:25
-    if outAdapt.means(1,j) == 1.60000000000000
+    if outAdapt.means(1,j) == [1.60000000000000]
         count02 = count02+1;
         persUp02(:,count02) = countUp(:,j);
         binNum02(:,count02) = bins(:,j);
@@ -60,6 +60,10 @@ pers4 = 0;
 pers5 = 0;
 pers6 = 0;
 pers7 = 0;
+pers8 = 0;
+pers9 = 0;
+pers10 = 0;
+
 c1 = 0;
 c2 = 0;
 c3 = 0;
@@ -67,6 +71,9 @@ c4 = 0;
 c5 = 0;
 c6 = 0;
 c7 = 0;
+c8 = 0;
+c9 = 0;
+c10 = 0;
 
 for i = 1:5
     for j = 1:60
@@ -91,6 +98,15 @@ for i = 1:5
         elseif binNum02(j,i) == 7
             c7 = c7+1;
             pers7 = pers7+persUp02(j,i);
+        elseif binNum02(j,i) == 8
+            c8 = c8+1;
+            pers8 = pers8+persUp02(j,i);
+        elseif binNum02(j,i) == 9
+            c9 = c9+1;
+            pers9 = pers9+persUp02(j,i);
+        elseif binNum02(j,i) == 10
+            c10 = c10+1;
+            pers10 = pers10+persUp02(j,i);
         end
     end
 end
@@ -102,8 +118,13 @@ pers4 = pers4/c4;
 pers5 = pers5/c5;
 pers6 = pers6/c6;
 pers7 = pers7/c7;
+pers8 = pers8/c8;
+pers9 = pers9/c9;
+pers10 = pers10/c10;
+resultsAdapt = [pers1 pers2 pers3 pers4 pers5 pers6 pers7 pers8 pers9 pers10];
+x = [0 1 2 3 4 5 6 7 8 9];
 
-scatter([0 1 2 3 4 5 6],[pers1 pers2 pers3 pers4 pers5 pers6 pers7])
+scatter(x,resultsAdapt,'b')
             
 
 countUp = zeros(60,25);
@@ -121,12 +142,12 @@ end
 for i = 2:60
     for j = 1:25
         if outNoAdapt.responses(i,j) > outNoAdapt.responses(i-1,j)
-            countUp(i-1,j) = -1;
+            countUp(i-1,j) = 0;
         elseif outNoAdapt.responses(i,j) < outNoAdapt.responses(i-1,j)
             countUp(i-1,j) = 1;
         end
         %%%%start here for updates
-        edges = [0 0.2 0.9 1.25 1.6 2.3 3];
+        edges = [0 0.1 0.2 0.4 0.7 1.1 1.6 2.2 2.9 3.7];
         [N,edges,bin]=histcounts(outNoAdapt.responses(1:NrespsAdapt(j),j),edges);
         bins(1:NrespsAdapt(j),j) = bin;
     end
@@ -138,7 +159,7 @@ binNum02 = zeros(60,5);
 
 
 for j = 1:25
-    if outNoAdapt.means(1,j) == 1.60000000000000
+    if outNoAdapt.means(1,j) == [1.60000000000000]
         count02 = count02+1;
         persUp02(:,count02) = countUp(:,j);
         binNum02(:,count02) = bins(:,j);
@@ -152,6 +173,10 @@ pers4 = 0;
 pers5 = 0;
 pers6 = 0;
 pers7 = 0;
+pers8 = 0;
+pers9 = 0;
+pers10 = 0;
+
 c1 = 0;
 c2 = 0;
 c3 = 0;
@@ -159,6 +184,9 @@ c4 = 0;
 c5 = 0;
 c6 = 0;
 c7 = 0;
+c8 = 0;
+c9 = 0;
+c10 = 0;
 
 for i = 1:5
     for j = 1:60
@@ -183,6 +211,15 @@ for i = 1:5
         elseif binNum02(j,i) == 7
             c7 = c7+1;
             pers7 = pers7+persUp02(j,i);
+        elseif binNum02(j,i) == 8
+            c8 = c8+1;
+            pers8 = pers8+persUp02(j,i);
+        elseif binNum02(j,i) == 9
+            c9 = c9+1;
+            pers9 = pers9+persUp02(j,i);
+        elseif binNum02(j,i) == 10
+            c10 = c10+1;
+            pers10 = pers10+persUp02(j,i);
         end
     end
 end
@@ -194,9 +231,15 @@ pers4 = pers4/c4;
 pers5 = pers5/c5;
 pers6 = pers6/c6;
 pers7 = pers7/c7;
+pers8 = pers8/c8;
+pers9 = pers9/c9;
+pers10 = pers10/c10;
+resultsAdapt = [pers1 pers2 pers3 pers4 pers5 pers6 pers7 pers8 pers9 pers10];
+x = [0 1 2 3 4 5 6 7 8 9];
+
 
 hold on
-scatter([0 1 2 3 4 5 6],[pers1 pers2 pers3 pers4 pers5 pers6 pers7])
+scatter(x,resultsAdapt,'r')
             
             
             

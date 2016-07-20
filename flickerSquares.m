@@ -17,8 +17,8 @@ escapeKey = KbName('ESCAPE');
 % mean = input(prompt);
 % prompt2 = 'What is the sd value? ';
 % sd = input(prompt2);
-mean = 24;
-sd = 0;
+mean = 3;
+sd = mean/3;
 
 % screenNumber = max(screens);
 screenNumber = 0;
@@ -39,15 +39,17 @@ yRSquare = yCenter ;
 
 %% matrix of probabalistically distributed frequencies 
 freqMat = normrnd(mean,sd,5,5); %%frequency of stim squares
-respFreq = normrnd(mean,sd);  %%response square freq
+respFreq = abs(rand*5);  %%response square freq
+phaseMat = abs(rand(5,5).*10);
 
 rectColor = [1 1 1];
 pStart = GetSecs;
 while GetSecs - pStart < 20
     %% draw squares at at lum determined by sin function and timing
+    time = GetSecs-pStart;
     for i = 1:5
         for j = 1:5
-            lumVal = 0.5+(0.5*sin(freqMat(i,j)*(GetSecs-pStart))0.5+(0.5*);
+            lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
             rectColor = [lumVal lumVal lumVal];
             xPos = xFSquares+i*75;
@@ -60,7 +62,7 @@ while GetSecs - pStart < 20
     KbCheck;
     [ keyIsDown, seconds, keyCode ] = KbCheck;
     if respFreq <=0 
-        respFreq = 1;
+        respFreq = 0.01;
     end
     if keyIsDown
         if keyCode(upKey)
@@ -70,7 +72,7 @@ while GetSecs - pStart < 20
         end  
     end
     %% draw response square, fixation point 
-    rLumVal = sin(respFreq*(GetSecs-pStart));
+    rLumVal = 0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)));
     reponseColor = [rLumVal rLumVal rLumVal];
     sideRect = CenterRectOnPointd(rRect, xRSquare,yRSquare);
     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
@@ -82,4 +84,4 @@ end
 KbStrokeWait; 
 
 sca;
-hist(freqMat)
+% hist(freqMat)
