@@ -44,8 +44,8 @@ nTrials = 25;
 adapTime = .5;
 topUp = 1;
 testTime = 10;
-upScale = 1.01;
-downScale = 0.99;
+upScale = 1.05;
+downScale = 0.95;
 reversals = 6;
 %% blank matrices for data storage and response tracking
 keyResp = zeros(60,1);
@@ -98,68 +98,68 @@ for k = 1:nTrials
     while stairCount <= reversals && curTrial < 60
         curTrial = curTrial+1;
         pStart = GetSecs;
-        while GetSecs - pStart < testTime;
-            %% draw squares at at lum determined by sine function and timing
-            time = GetSecs-pStart;
-            for i = 1:5
-                for j = 1:5
-                    lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
-                    %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
-                    rectColor = [lumVal lumVal lumVal];
-                    xPos = xFSquares+i*75;
-                    yPos = yFSquares+j*75;
-                    centeredRect = CenterRectOnPointd(baseRect, xPos, yPos);
-                    Screen('FillRect', window, rectColor, centeredRect);
-                end
-            end
-            %% get key responses from response square
-            KbCheck;
-            [keyIsDown, seconds, keyCode ]  = KbCheck;
-            if keyIsDown
-                if keyCode(upKey) && positionPick ==1
-                    respFreqnew = respFreq.*upScale;
-                    keyResp(curTrial,1) = 'U';
-                elseif keyCode(downKey) && positionPick == 2
-                    respFreqnew = respFreq.*downScale;
-                    keyResp(curTrial,1) = 'D';
-                elseif keyCode(downKey) && positionPick == 1
-                    respFreqnew = respFreq.*downScale;
-                    keyResp(curTrial,1) = 'D';
-                elseif keyCode(upKey) && positionPick == 2
-                    respFreqnew = respFreq.*upScale;
-                    keyResp(curTrial,1) = 'U';
-                elseif keyCode(escapeKey)
-                    close all;
-                    sca;
-                elseif keyCode(spaceKey)
-                    stairCount = 7;
-                end
-            end
-            respFreq = respFreqnew;
-            %% draw response square, fixation point
-            rLumValnew = rLumVal;
-            rLumVal = 0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)+(rLumValnew)));
-            respFreq
-            reponseColor = [rLumVal rLumVal rLumVal];
-            sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquares);
-            Screen('FillRect', window, reponseColor, sideRect);
-            
-            
-            %% draw fixation
-            fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
-            Screen('FillOval',window, [.75 .75 .75],fixRect);
-            %% screen flip
-            Screen('Flip', window);
-            allRespFreq = cat(1,allRespFreq,respFreq);
-            meanRespFreq = sum(respFreq(:));
-            respOut(curTrial,k) = meanRespFreq;
-            %% increase staircase counter
-            if curTrial > 4 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
-                stairCount = stairCount+1;
-            elseif curTrial > 4 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
-                stairCount = stairCount+1;
+        %         while GetSecs - pStart < testTime;
+        %% draw squares at at lum determined by sine function and timing
+        time = GetSecs-pStart;
+        for i = 1:5
+            for j = 1:5
+                lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
+                %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
+                rectColor = [lumVal lumVal lumVal];
+                xPos = xFSquares+i*75;
+                yPos = yFSquares+j*75;
+                centeredRect = CenterRectOnPointd(baseRect, xPos, yPos);
+                Screen('FillRect', window, rectColor, centeredRect);
             end
         end
+        %% get key responses from response square
+        KbCheck;
+        [keyIsDown, seconds, keyCode ]  = KbCheck;
+        if keyIsDown
+            if keyCode(upKey) && positionPick ==1
+                respFreqnew = respFreq.*upScale;
+                keyResp(curTrial,1) = 'U';
+            elseif keyCode(downKey) && positionPick == 2
+                respFreqnew = respFreq.*downScale;
+                keyResp(curTrial,1) = 'D';
+            elseif keyCode(downKey) && positionPick == 1
+                respFreqnew = respFreq.*downScale;
+                keyResp(curTrial,1) = 'D';
+            elseif keyCode(upKey) && positionPick == 2
+                respFreqnew = respFreq.*upScale;
+                keyResp(curTrial,1) = 'U';
+            elseif keyCode(escapeKey)
+                close all;
+                sca;
+            elseif keyCode(spaceKey)
+                stairCount = 7;
+            end
+        end
+        respFreq = respFreqnew;
+        %% draw response square, fixation point
+        rLumValnew = rLumVal;
+        rLumVal = 0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)+(rLumValnew)));
+        respFreq
+        reponseColor = [rLumVal rLumVal rLumVal];
+        sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquares);
+        Screen('FillRect', window, reponseColor, sideRect);
+        
+        
+        %% draw fixation
+        fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
+        Screen('FillOval',window, [.75 .75 .75],fixRect);
+        %% screen flip
+        Screen('Flip', window);
+        allRespFreq = cat(1,allRespFreq,respFreq);
+        meanRespFreq = sum(respFreq(:));
+        respOut(curTrial,k) = meanRespFreq;
+        %% increase staircase counter
+        if curTrial > 4 && keyResp(curTrial,1) == 'U' && keyResp(curTrial-1,1) == 'D'
+            stairCount = stairCount+1;
+        elseif curTrial > 4 && keyResp(curTrial,1) == 'D' && keyResp(curTrial-1,1) == 'U'
+            stairCount = stairCount+1;
+        end
+        
     end
     %                 respFreq = respFreqnew;
     meanRespFreq = sum(respFreq(:));

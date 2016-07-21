@@ -72,7 +72,7 @@ while GetSecs - pStart < 20
         end  
     end
     %% draw response square, fixation point 
-    rLumVal = 0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)));
+    rLumVal = rLumVal+0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)));
     reponseColor = [rLumVal rLumVal rLumVal];
     sideRect = CenterRectOnPointd(rRect, xRSquare,yRSquare);
     fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);

@@ -124,7 +124,7 @@ pers10 = pers10/c10;
 resultsAdapt = [pers1 pers2 pers3 pers4 pers5 pers6 pers7 pers8 pers9 pers10];
 x = [0 1 2 3 4 5 6 7 8 9];
 
-scatter(x,resultsAdapt,'b')
+scatter(x,resultsAdapt,N,'b')
             
 
 countUp = zeros(60,25);
@@ -239,7 +239,7 @@ x = [0 1 2 3 4 5 6 7 8 9];
 
 
 hold on
-scatter(x,resultsAdapt,'r')
+scatter(x,resultsAdapt,N,'r')
             
             
             
