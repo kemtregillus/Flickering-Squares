@@ -159,6 +159,6 @@ for k = 1:nTrials
     means = cat(1,mean.',meanFreqMat);
     allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
     outAdapt = struct('means',means,'responses',allRespFreq,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq);
-    saveFile = strcat(subj,'_Adapt_',date,'.mat');
+    saveFile = strcat(subj,'_ensemble_',date,'.mat');
     save(saveFile,'outAdapt');
 end
