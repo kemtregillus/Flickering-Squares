@@ -93,6 +93,11 @@ for k = 1:nTrials
         [x,y,button] = GetMouse(window);
         if button(1)
             filler = 2;
+            fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
+            %     Screen('FillRect', window, reponseC olor, sideRect);
+            Screen('FillOval',window, [.75 .75 .75],fixRect);
+            Screen('Flip', window);
+            WaitSecs(1);
         end
         time = GetSecs-pStart;
         for i = 1:5
@@ -116,14 +121,14 @@ for k = 1:nTrials
 %                 break;
             end
         end
-        if GetSecs - ptime >= 1
+%         if GetSecs - ptime >= 1
             [posX] = GetMouse(window);
-            ptime = GetSecs;
-        end
-        
-        rLumValnew = rLumVal;
+%             ptime = GetSecs;
+%         end
         respFreq = posX/360;
-        rLumVal = 0.5+(0.5*sin(respFreq*(time)*(2*pi)+(rLumValnew)));
+%         phase = asin((rLumVal - 0.5)/5)-(respFreq*time*(2*pi))
+        rLumValnew = rLumVal;
+        rLumVal = 0.5*sin(respFreq*time*(2*pi)+(rLumValnew))+0.5;
         reponseColor = [rLumVal rLumVal rLumVal];
         sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquares);
         Screen('FillRect', window, reponseColor, sideRect);

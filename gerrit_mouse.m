@@ -23,6 +23,8 @@ black = BlackIndex(screenNumber);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, black+0.5);
 % [window, windowRect] = PsychImaging('OpenWindow',screenNumber,black,[0 0 1000 500 ]);
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
+% [GM] need this: refresh interval
+ifi = Screen('GetFlipInterval', window);
 baseRect = [0 0 65 65]; %%stim squares size
 rRect = [0 0 100 100];
 fixation = [0 0 20 20];  %%fixation size
@@ -52,6 +54,7 @@ allRespFreq = zeros(1,1);
 meanPick = randi([1,5]);
 meanName = strcat('mean',int2str(meanPick));
 meanid = fopen(strcat(meanName,'.txt'));
+% [GM] don't have this file, so hard coding mean:
 mean = fscanf(meanid,'%f');
 meanR = rand*3; %starting response mean (mean for test field) is chosen randomly
 %% phase is randomized, this variable is not stored
@@ -84,10 +87,26 @@ for k = 1:nTrials
     sdFreqMat(1,k) = std(freqMat(:));
     
     SetMouse(rand*xMax,yCenter,window);
-    
+    [posX] = GetMouse(window);
     curTrial = curTrial+1;
     pStart = GetSecs;
-    while 2
+    ptime = GetSecs;
+    filler = 1;
+    % [GM] set a few things:
+    oldTime = 0;
+    respFreq = posX/360;
+    oldFreq = respFreq;
+    oldPos = rand*2*pi; %asin((rLumVal - 0.5)/5);
+    while filler == 1
+        [x,y,button] = GetMouse(window);
+        if button(1)
+            filler = 2;
+            fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
+            %     Screen('FillRect', window, reponseC olor, sideRect);
+            Screen('FillOval',window, [.75 .75 .75],fixRect);
+            Screen('Flip', window);
+            WaitSecs(1);
+        end
         time = GetSecs-pStart;
         for i = 1:5
             for j = 1:5
@@ -100,6 +119,8 @@ for k = 1:nTrials
                 Screen('FillRect', window, rectColor, centeredRect);
             end
         end
+%         [GM] You can probably get rid of this if you use ouse clicks for
+%         responses:
         KbCheck;
         [keyIsDown, seconds, keyCode ]  = KbCheck;
         if keyIsDown
@@ -108,10 +129,20 @@ for k = 1:nTrials
                 sca;
             end
         end
+        if GetSecs - ptime >= .25
         [posX] = GetMouse(window);
-        rLumValnew = rLumVal;
-        respFreqnew = posX/200;
-        rLumVal = 0.5+(0.5*sin(respFreq*(GetSecs-pStart)*(2*pi)+(rLumValnew)));
+            ptime = GetSecs;
+        end
+        if posX/360 ~= respFreq %change in freq
+            oldTime = time - ifi;
+            oldFreq = respFreq;
+            respFreq = posX/360;
+            oldPos = asin((rLumVal - 0.5)/5);
+        end
+        rLumVal = 0.5 + 0.5 * sin(oldPos + respFreq * (time - oldTime) *2*pi);
+%         else
+%             rLumVal = 0.5*sin(respFreq*time*(2*pi)+(rLumValnew))+0.5;
+
         reponseColor = [rLumVal rLumVal rLumVal];
         sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquares);
         Screen('FillRect', window, reponseColor, sideRect);
@@ -121,5 +152,13 @@ for k = 1:nTrials
         %% screen flip
         Screen('Flip', window);
     end
+    allRespFreq = cat(1,allRespFreq,respFreq);
+    meanRespFreq = sum(respFreq(:));
+    respOut(curTrial,k) = meanRespFreq;
+    %% save stuff
+    means = cat(1,mean.',meanFreqMat);
+    allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
+    outAdapt = struct('means',means,'responses',allRespFreq,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq);
+    saveFile = strcat(subj,'_Adapt_',date,'.mat');
+    save(saveFile,'outAdapt');
 end
-
