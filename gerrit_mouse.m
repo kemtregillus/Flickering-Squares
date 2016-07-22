@@ -94,7 +94,7 @@ for k = 1:nTrials
     filler = 1;
     % [GM] set a few things:
     oldTime = 0;
-    respFreq = posX/360;
+    respFreq = posX/(xMax/6);
     oldFreq = respFreq;
     oldPos = rand*2*pi; %asin((rLumVal - 0.5)/5);
     while filler == 1
@@ -133,10 +133,10 @@ for k = 1:nTrials
         [posX] = GetMouse(window);
             ptime = GetSecs;
         end
-        if posX/360 ~= respFreq %change in freq
+        if posX/(xMax/6) ~= respFreq %change in freq
             oldTime = time - ifi;
             oldFreq = respFreq;
-            respFreq = posX/360;
+            respFreq = posX/(xMax/6);
             oldPos = asin((rLumVal - 0.5)/5);
         end
         rLumVal = 0.5 + 0.5 * sin(oldPos + respFreq * (time - oldTime) *2*pi);
@@ -162,3 +162,5 @@ for k = 1:nTrials
     saveFile = strcat(subj,'_ensemble_',date,'.mat');
     save(saveFile,'outAdapt');
 end
+sca
+
