@@ -88,7 +88,12 @@ for k = 1:nTrials
     curTrial = curTrial+1;
     pStart = GetSecs;
     ptime = GetSecs;
-    while 2
+    filler = 1;
+    while filler == 1
+        [x,y,button] = GetMouse(window);
+        if button(1)
+            filler = 2;
+        end
         time = GetSecs-pStart;
         for i = 1:5
             for j = 1:5
@@ -107,16 +112,15 @@ for k = 1:nTrials
             if keyCode(escapeKey)
                 close all;
                 sca;
+%             elseif keyCode(spaceKey)
+%                 break;
             end
         end
-        if GetSecs - ptime >= .8
+        if GetSecs - ptime >= 1
             [posX] = GetMouse(window);
             ptime = GetSecs;
         end
-        [x,y,button] = GetMouse(window);
-        if button(1)
-            break;
-        end
+        
         rLumValnew = rLumVal;
         respFreq = posX/360;
         rLumVal = 0.5+(0.5*sin(respFreq*(time)*(2*pi)+(rLumValnew)));
