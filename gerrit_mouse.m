@@ -81,6 +81,7 @@ for k = 1:nTrials
     %% matrix of probabalistically distributed frequencies
     sd = mean(k,1)/3;
     freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+    freqMat(3,3) = mean(k,1);
     allAdaptFreq = cat(1,allAdaptFreq,freqMat);
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
@@ -162,5 +163,114 @@ for k = 1:nTrials
     saveFile = strcat(subj,'_ensemble_',date,'.mat');
     save(saveFile,'outAdapt');
 end
+%% do it
+% meanPick = randi([1,5]);
+% meanName = strcat('mean',int2str(meanPick));
+% meanid = fopen(strcat(meanName,'.txt'));
+% for k = 1:nTrials
+%     %% puts adapt field either on left or right
+%     positionPick = randi([1,2]);
+%     if positionPick == 1 %% adapt field on the left
+%         %%distance away from fixation with these setting is 125 pixels
+%         xFSquares = xCenter-175;  %%location stim squares - overall width of square matix is 375
+%         yFSquares = yCenter;
+%         xRSquares = xCenter+175;  %%location response squares
+%         yRSquares = yCenter;
+%         AdaptField(1,k) = 1;
+%     else %% adapt field on the right
+%         xRSquares = xCenter-175;  %%location stim squares - overall width of square matix is 375
+%         yRSquares = yCenter;
+%         xFSquares = xCenter+175;  %%location response squares
+%         yFSquares = yCenter;
+%         AdaptField(1,k) = 2;
+%     end
+%     rLumVal = 0;
+%     %% matrix of probabalistically distributed frequencies
+%     sd = mean(k,1)/3;
+%     freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+%     allAdaptFreq = cat(1,allAdaptFreq,freqMat);
+%     meanFreq = sum(freqMat(:))/25;
+%     meanFreqMat(1,k) = meanFreq;
+%     sdFreqMat(1,k) = std(freqMat(:));
+%     
+%     SetMouse(rand*xMax,yCenter,window);
+%     [posX] = GetMouse(window);
+%     curTrial = curTrial+1;
+%     pStart = GetSecs;
+%     ptime = GetSecs;
+%     filler = 1;
+%     % [GM] set a few things:
+%     oldTime = 0;
+%     respFreq = posX/(xMax/6);
+%     oldFreq = respFreq;
+%     oldPos = rand*2*pi; %asin((rLumVal - 0.5)/5);
+%     phase = rand*5;
+%     while filler == 1
+%         [x,y,button] = GetMouse(window);
+%         if button(1)
+%             filler = 2;
+%             fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
+%             %     Screen('FillRect', window, reponseC olor, sideRect);
+%             Screen('FillOval',window, [.75 .75 .75],fixRect);
+%             Screen('Flip', window);
+%             WaitSecs(1);
+%         end
+%         time = GetSecs-pStart;
+% %         for i = 1:5
+% %             for j = 1:5
+%                 lumVal = 0.5+(0.5*sin(mean(k)*time*(2*pi)+(phase)));
+%                 %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
+%                 rectColor = [lumVal lumVal lumVal];
+%              
+%                 centeredRect = CenterRectOnPointd(rRect, xFSquares, yFSquares);
+%                 Screen('FillRect', window, rectColor, centeredRect);
+% %             end
+% %         end
+% %         [GM] You can probably get rid of this if you use ouse clicks for
+% %         responses:
+%         KbCheck;
+%         [keyIsDown, seconds, keyCode ]  = KbCheck;
+%         if keyIsDown
+%             if keyCode(escapeKey)
+%                 close all;
+%                 sca;
+%             end
+%         end
+% %         if GetSecs - ptime >= .25
+%         [posX] = GetMouse(window);
+% %             ptime = GetSecs;
+% %         end
+%         if posX/(xMax/6) ~= respFreq %change in freq
+%             oldTime = time - ifi;
+%             oldFreq = respFreq;
+%             respFreq = posX/(xMax/6);
+%             oldPos = asin((rLumVal - 0.5)/5);
+%         end
+%         rLumVal = 0.5 + 0.5 * sin(oldPos + respFreq * (time - oldTime) *2*pi);
+% %         else
+% %             rLumVal = 0.5*sin(respFreq*time*(2*pi)+(rLumValnew))+0.5;
+% 
+%         reponseColor = [rLumVal rLumVal rLumVal];
+%         sideRect = CenterRectOnPointd(rRect, xRSquares,yRSquares);
+%         Screen('FillRect', window, reponseColor, sideRect);
+%         %% draw fixation
+%         fixRect = CenterRectOnPointd(fixation,xCenter,yCenter);
+%         Screen('FillOval',window, [.75 .75 .75],fixRect);
+%         %% screen flip
+%         Screen('Flip', window);
+%         
+%     end
+%     allRespFreq = cat(1,allRespFreq,respFreq);
+%     meanRespFreq = sum(respFreq(:));
+%     respOut(curTrial,k) = meanRespFreq;
+%     %% save stuff
+%     means = cat(1,mean.',meanFreqMat);
+%     allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
+%     outAdapt = struct('means',means,'responses',allRespFreq,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq);
+%     saveFile = strcat(subj,'_singlesquare_',date,'.mat');
+%     save(saveFile,'outAdapt');
+% end
+
+
 sca
 

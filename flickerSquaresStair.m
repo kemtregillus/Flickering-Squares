@@ -22,7 +22,7 @@ escapeKey = KbName('ESCAPE');
 %% get subj 
 prompt = 'Subject initials: ';
 subj = input(prompt);
-%% window and screen set up
+ %% window and screen set up
 screenNumber = max(screens);
 % screenNumber = 0 ;
 black = BlackIndex(screenNumber);
