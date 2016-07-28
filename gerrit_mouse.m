@@ -33,7 +33,7 @@ fixation = [0 0 20 20];  %%fixation size
 Screen('DrawText',window,'Press arrow keys to indicate which array of squares is flickering more quickly',xCenter/4,yCenter,[1 1 1])
 Screen('DrawText',window,'Press Key to Continue',xCenter-150,yCenter+30,[1 1 1])
 Screen('Flip', window);
-% HideCursor();
+HideCursor();
 KbStrokeWait;
 %% basic set up
 rectColor = [1 1 1];
