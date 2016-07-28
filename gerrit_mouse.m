@@ -45,6 +45,7 @@ nTrials = 25;
 keyResp = zeros(60,1);
 respOut = zeros(60,nTrials);
 meanFreqMat = zeros(1,nTrials);
+centerFreqMat = zeros(1,nTrials);
 sdFreqMat = zeros(1,nTrials);
 AdaptField = zeros(1,nTrials);
 frequency = zeros(500,2);
@@ -81,10 +82,11 @@ for k = 1:nTrials
     %% matrix of probabalistically distributed frequencies
     sd = mean(k,1)/3;
     freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
-    freqMat(3,3) = mean(k,1);
+    centerFreq = freqMat(3,3);
     allAdaptFreq = cat(1,allAdaptFreq,freqMat);
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
+    centerFreqMat(1,k) = centerFreq;
     sdFreqMat(1,k) = std(freqMat(:));
     
     SetMouse(rand*xMax,yCenter,window);
@@ -157,7 +159,7 @@ for k = 1:nTrials
     meanRespFreq = sum(respFreq(:));
     respOut(curTrial,k) = meanRespFreq;
     %% save stuff
-    means = cat(1,mean.',meanFreqMat);
+    means = cat(1,mean.',meanFreqMat,centerFreqMat);
     allAdaptFreq = cat(1,allAdaptFreq,zeros(1,5));
     outAdapt = struct('means',means,'responses',allRespFreq,'standevs',sdFreqMat,'rORlAdaptField',AdaptField,'allAdaptFreq',allAdaptFreq);
     saveFile = strcat(subj,'_ensemble_',date,'.mat');
@@ -271,6 +273,10 @@ end
 %     save(saveFile,'outAdapt');
 % end
 
+Screen('DrawText',window,'You are done. Thank you for participating. Press Key to Continue',xCenter/4,yCenter,[1 1 1])
+Screen('Flip', window);
+KbStrokeWait;
+sca;
 
 sca
 
