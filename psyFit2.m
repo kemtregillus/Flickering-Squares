@@ -1,19 +1,23 @@
 clear all
 close all
-% 
-% load 'SC_No_Adapt_01-Jul-2016.mat'
-% load 'SC_Adapt_01-Jul-2016.mat'
 
 % load 'KT_No_Adapt_01-Jul-2016.mat'
 % load 'KT_Adapt_01-Jul-2016.mat'
+
+% load 'SC_No_Adapt_01-Jul-2016.mat'
+% load 'SC_Adapt_01-Jul-2016.mat'
 % 
-% load 'AA_No_Adapt_04-Jul-2016.mat'
+% load 'wk_No_Adapt_04-Jul-2016.mat'
+% load 'wk_Adapt_05-Jul-2016.mat'
+% 
+% load 'AA_No_Adapt_12-Jul-2016.mat'
 % load 'AA_Adapt_05-Jul-2016.mat'
 
-load 'wk_No_Adapt_04-Jul-2016.mat'
-load 'wk_Adapt_05-Jul-2016.mat'
-
 % load 'ST_No_Adapt_11-Jul-2016.mat'
+% load 'ST_Adapt_11-Jul-2016.mat'
+
+load 'HG_No_Adapt_11-Jul-2016.mat'
+load 'HG_Adapt_12-Jul-2016.mat'
 
 
 all02 = zeros(60,5);
@@ -105,3 +109,14 @@ for i = 1:5
     adapt = 0;
     binAndFit(input,adapt,figNum);
 end
+
+figure(1)
+title('Adapt Level = 0.2','fontsize',16)
+figure(2)
+title('Adapt Level = 0.9','fontsize',16)
+figure(3)
+title('Adapt Level = 1.6','fontsize',16)
+figure(4)
+title('Adapt Level = 2.3','fontsize',16)
+figure(5)
+title('Adapt Level = 3','fontsize',16)

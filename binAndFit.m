@@ -152,5 +152,7 @@ if adapt == 0
     y_plot = PF(params,x_plot);
     hold on
     plot(x_plot,y_plot,'r-');
-    axis([0 edges(6) 0 1]);
+    axis([edges(1) edges(6) 0 1]);
+    xlabel('Adapt Level')
+    ylabel('Percent Responsed "Too Fast"')
 end
