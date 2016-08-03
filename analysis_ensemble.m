@@ -2,7 +2,7 @@ clear all
 close all
 
 % load 'KT2_ensemble_22-Jul-2016'
-load 'wk_ensemble_28-Jul-2016.mat'
+load 'WK_ensemble_01-Aug-2016.mat'
 
 
 p1 = scatter(outAdapt.means(2,:),outAdapt.responses(2:26)');
@@ -14,7 +14,7 @@ plot(outAdapt.means(1,:),outAdapt.means(1,:),'-k')
 
 
 % load 'kt2_ensemble_28-Jul-2016.mat'
-load 'wk3_ensemble_28-Jul-2016.mat'
+load 'WK2_ensemble_01-Aug-2016.mat'
 
 p2 = scatter(outAdapt.means(3,:),outAdapt.responses(2:26)');
 hold on
