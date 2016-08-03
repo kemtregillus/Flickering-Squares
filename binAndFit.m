@@ -1,4 +1,5 @@
-function [resultsAdapt,edges, N, resultsNoAdapt] = binAndFit(input,adapt,figNum)
+function [edges, N,pse,params,x, PF] = binAndFit(input,adapt,figNum)
+
 
 if adapt == 1
     nbins = 5;
@@ -152,7 +153,7 @@ if adapt == 0
     y_plot = PF(params,x_plot);
     hold on
     plot(x_plot,y_plot,'r-');
-    axis([edges(1) edges(6) 0 1]);
+    axis([0 edges(6) 0 1]);
     xlabel('Adapt Level')
     ylabel('Percent Responsed "Too Fast"')
 end
