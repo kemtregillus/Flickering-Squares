@@ -17,8 +17,8 @@ escapeKey = KbName('ESCAPE');
 prompt = 'Subject initials: ';
 subj = input(prompt);
 %% window and screen set up
-screenNumber = max(screens);
-% screenNumber = 0 ;
+%screenNumber = max(screens);
+screenNumber = 1 ;
 black = BlackIndex(screenNumber);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, black+0.5);
 % [window, windowRect] = PsychImaging('OpenWindow',screenNumber,black,[0 0 1000 500 ]);
@@ -81,7 +81,9 @@ for k = 1:nTrials
     rLumVal = 0;
     %% matrix of probabalistically distributed frequencies
     sd = mean(k,1)/3;
-    freqMat = abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
+    %%%%edited to test ensemble weighting or energy shifts
+    freqMat = zeros(5,5);
+    freqMat(:,:) = mean(k,1); %%abs(normrnd(mean(k,1),sd,5,5)); %%frequency of stim squares
     allAdaptFreq = cat(1,allAdaptFreq,freqMat);
     meanFreq = sum(freqMat(:))/25;
     meanFreqMat(1,k) = meanFreq;
@@ -96,7 +98,7 @@ for k = 1:nTrials
         singleFreq = freqMat(3,1);
     end
     singleFreqMat(1,k) = singleFreq;
-    SetMouse(rand*xMax,yCenter,window);
+%     SetMouse(rand*xMax,yCenter,window);
     [posX] = GetMouse(window);
     curTrial = curTrial+1;
     pStart = GetSecs;

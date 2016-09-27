@@ -107,19 +107,9 @@ for k = 1:nTrials
                 pStart = GetSecs;
                 while GetSecs - pStart < topUp
                     %% draw squares at lum determined by sin function and timing
-                    %%commented out for no adapt
+                    
                     time = GetSecs-pStart;
-%                     for i = 1:5
-%                         for j = 1:5
-%                             lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
-%                             %             rectColor = [lumVal*rand lumVal*rand lumVal*rand];
-%                             rectColor = [lumVal lumVal lumVal];
-%                             xPos = xFSquares+i*75;
-%                             yPos = yFSquares+j*75;
-%                             centeredRect = CenterRectOnPointd(baseRect, xPos, yPos);
-%                             Screen('FillRect', window, rectColor, centeredRect);
-%                         end
-%                     end
+%                     
                     %% key check, Up or Down determined differntly depending on adapt field position
                     %%no position info for no adapt
                     KbCheck;
@@ -227,20 +217,7 @@ for k = 1:nTrials
                     %% draw squares at at lumdetermined by sin function and timing
                     %%commented out for no adapt
                     time = GetSecs-pStart;
-%                     for i = 1:5
-%                         for j = 1:5
-%                             %%sin wave vals = 0.5 is start y val, meaning it
-%                             %%shouldn't dip below 0, 0.5 is also amplitude,
-%                             %%phastMat makes each square start at random phase
-%                             lumVal = 0.5+(0.5*sin(freqMat(i,j)*time*(2*pi)+(phaseMat(i,j))));
-%                             % rectColor = [lumVal*rand lumVal*rand lumVal*rand];
-%                             rectColor = [lumVal lumVal lumVal];
-%                             xPos = xFSquares+i*75;
-%                             yPos = yFSquares+j*75;
-%                             centeredRect = CenterRectOnPointd(baseRect, xPos, yPos);
-%                             Screen('FillRect', window, rectColor, centeredRect);
-%                         end
-%                     end
+
                     %% checks for escape key
                     KbCheck;
                     [keyIsDown, seconds, keyCode ]  = KbCheck;
